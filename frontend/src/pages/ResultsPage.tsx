@@ -114,7 +114,7 @@ export default function ResultsPage() {
       try {
         setLoading(true)
         const response = await fetch(
-          apiUrl(`/api/analyze?ticker=${ticker}&period=5y&window_days=5`)
+          apiUrl(`/analyze?ticker=${ticker}&period=5y&window_days=5`)
         )
         const data: AnalysisResult = await response.json()
         setResults(data)

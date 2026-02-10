@@ -52,7 +52,7 @@ export default function TopStocksPage() {
     const loadTopStocks = async () => {
       try {
         setLoading(true)
-        const response = await fetch(apiUrl('/api/top'))
+        const response = await fetch(apiUrl('/top'))
         
         if (!response.ok) {
           throw new Error('Failed to load top stocks data')
