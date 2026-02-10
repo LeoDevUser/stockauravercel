@@ -1,0 +1,5 @@
+yfinance
+statsmodels
+matplotlib
+fastapi
+uvicorn

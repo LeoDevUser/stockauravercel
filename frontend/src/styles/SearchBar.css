@@ -1,0 +1,11 @@
+.suggestion-item.selected {
+  background-color: #ff9500;
+}
+
+.suggestion-item.selected .suggestion-ticker {
+  color: black;
+}
+
+.suggestion-item.selected .suggestion-title {
+  color: white;
+}

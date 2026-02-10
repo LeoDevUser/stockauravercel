@@ -1,0 +1,348 @@
+/* Trading Direction Indicator */
+
+.trading-direction {
+  background: #2b2f36;
+  padding: 1.2em;
+  border-radius: 8px;
+  border: 1px solid #444;
+  margin-bottom: 1em;
+}
+
+.trading-direction h4 {
+  margin: 0 0 1em 0;
+  color: #ff9500;
+  font-size: 0.95em;
+}
+
+.direction-box {
+  padding: 1em;
+  border-radius: 6px;
+  border-left: 4px solid;
+}
+
+.direction-box.long {
+  background-color: rgba(34, 197, 94, 0.1);
+  border-left-color: #22c55e;
+  border: 1px solid #22c55e;
+}
+
+.direction-box.short {
+  background-color: rgba(239, 68, 68, 0.1);
+  border-left-color: #ef4444;
+  border: 1px solid #ef4444;
+}
+
+.direction-box.neutral {
+  background-color: rgba(245, 158, 11, 0.1);
+  border-left-color: #f59e0b;
+  border: 1px solid #f59e0b;
+}
+
+.direction-label {
+  font-size: 1.1em;
+  font-weight: bold;
+  margin-bottom: 0.5em;
+  padding-bottom: 0.5em;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.direction-box.long .direction-label {
+  color: #22c55e;
+}
+
+.direction-box.short .direction-label {
+  color: #ef4444;
+}
+
+.direction-box.neutral .direction-label {
+  color: #f59e0b;
+}
+
+.direction-strength {
+  font-size: 0.9em;
+  color: #aaa;
+  margin-bottom: 0.75em;
+}
+
+.direction-description {
+  margin-bottom: 1em;
+  font-size: 0.9em;
+}
+
+.direction-description p {
+  margin: 0.4em 0;
+  line-height: 1.4;
+  color: #d0d0d0;
+}
+
+.direction-description p strong {
+  color: #fff;
+}
+
+.direction-tactics {
+  background: rgba(0,0,0,0.3);
+  padding: 0.75em;
+  border-radius: 4px;
+  margin-top: 0.75em;
+  font-size: 0.85em;
+}
+
+.direction-tactics strong {
+  display: block;
+  margin-bottom: 0.5em;
+  color: #fff;
+}
+
+.direction-tactics ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.direction-tactics li {
+  margin: 0.3em 0;
+  padding-left: 1.2em;
+  position: relative;
+  color: #ccc;
+}
+
+.direction-tactics li:before {
+  content: "→";
+  position: absolute;
+  left: 0;
+  color: #ff9500;
+}
+
+/* Hurst Regime Box */
+
+.hurst-regime-box {
+  background: #2b2f36;
+  padding: 1.2em;
+  border-radius: 8px;
+  border: 1px solid #444;
+  margin-bottom: 1em;
+}
+
+.hurst-regime-box h4 {
+  margin: 0 0 1em 0;
+  color: #ff9500;
+  font-size: 0.95em;
+}
+
+.regime-box {
+  padding: 1em;
+  border-radius: 6px;
+  border-left: 4px solid;
+}
+
+.regime-box.trending {
+  background-color: rgba(239, 68, 68, 0.1);
+  border-left-color: #ef4444;
+  border: 1px solid #ef4444;
+}
+
+.regime-box.mean-reverting {
+  background-color: rgba(34, 197, 94, 0.1);
+  border-left-color: #22c55e;
+  border: 1px solid #22c55e;
+}
+
+.regime-box.random {
+  background-color: rgba(245, 158, 11, 0.1);
+  border-left-color: #f59e0b;
+  border: 1px solid #f59e0b;
+}
+
+.regime-type {
+  font-size: 1em;
+  font-weight: bold;
+  margin-bottom: 0.5em;
+  padding-bottom: 0.5em;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.regime-box.trending .regime-type {
+  color: #ef4444;
+}
+
+.regime-box.mean-reverting .regime-type {
+  color: #22c55e;
+}
+
+.regime-box.random .regime-type {
+  color: #f59e0b;
+}
+
+.regime-description {
+  font-size: 0.9em;
+  margin-bottom: 0.75em;
+  color: #d0d0d0;
+}
+
+.regime-description strong {
+  color: #fff;
+}
+
+.regime-tactics {
+  background: rgba(0,0,0,0.3);
+  padding: 0.75em;
+  border-radius: 4px;
+  margin-top: 0.75em;
+  font-size: 0.85em;
+}
+
+.regime-tactics ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.regime-tactics li {
+  margin: 0.3em 0;
+  padding-left: 1.2em;
+  position: relative;
+  color: #ccc;
+}
+
+.regime-tactics li:before {
+  content: "→";
+  position: absolute;
+  left: 0;
+  color: #ff9500;
+}
+
+/* Direction vs Regime Alignment */
+
+.direction-regime-check {
+  background: #2b2f36;
+  padding: 1.2em;
+  border-radius: 8px;
+  border: 1px solid #444;
+  margin-bottom: 1em;
+}
+
+.direction-regime-check h4 {
+  margin: 0 0 1em 0;
+  color: #ff9500;
+  font-size: 0.95em;
+}
+
+.alignment-good {
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid #22c55e;
+  border-left: 4px solid #22c55e;
+  padding: 1em;
+  border-radius: 6px;
+  color: #d0d0d0;
+}
+
+.alignment-good > strong {
+  color: #22c55e;
+}
+
+.alignment-good p {
+  margin: 0.5em 0;
+  font-size: 0.9em;
+}
+
+.alignment-caution {
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid #f59e0b;
+  border-left: 4px solid #f59e0b;
+  padding: 1em;
+  border-radius: 6px;
+  color: #d0d0d0;
+}
+
+.alignment-caution > strong {
+  color: #f59e0b;
+}
+
+.alignment-caution p {
+  margin: 0.5em 0;
+  font-size: 0.9em;
+}
+
+/* Trade Examples */
+
+.trade-examples {
+  background: #2b2f36;
+  padding: 1.2em;
+  border-radius: 8px;
+  border: 1px solid #444;
+  margin-bottom: 1em;
+}
+
+.trade-examples h4 {
+  margin: 0 0 1em 0;
+  color: #ff9500;
+  font-size: 0.95em;
+}
+
+.example-box {
+  background: rgba(34, 197, 94, 0.05);
+  border: 1px solid #22c55e;
+  border-radius: 6px;
+  padding: 1em;
+}
+
+.example-title {
+  font-weight: bold;
+  color: #22c55e;
+  margin-bottom: 1em;
+  padding-bottom: 0.5em;
+  border-bottom: 1px solid #22c55e;
+}
+
+.example-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75em;
+}
+
+.step {
+  display: grid;
+  grid-template-columns: 30px 100px 1fr;
+  gap: 1em;
+  align-items: start;
+  font-size: 0.9em;
+}
+
+.step-number {
+  background: #22c55e;
+  color: #000;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+.step-label {
+  color: #888;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.8em;
+}
+
+.step-value {
+  color: #d0d0d0;
+  line-height: 1.4;
+}
+
+/* Responsive */
+
+@media (max-width: 1024px) {
+  .step {
+    grid-template-columns: 1fr;
+  }
+  
+  .step-number {
+    width: 25px;
+    height: 25px;
+    font-size: 0.9em;
+  }
+}

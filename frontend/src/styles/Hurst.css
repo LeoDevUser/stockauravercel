@@ -1,0 +1,277 @@
+/* CSS for Hurst Exponent Display and Alignment Explanations */
+
+/* Hurst Value Display */
+.hurst-value-display {
+  background: rgba(255, 149, 0, 0.1);
+  border: 1px solid #ff9500;
+  padding: 1em;
+  border-radius: 6px;
+  margin-bottom: 1em;
+  display: flex;
+  align-items: center;
+  gap: 1em;
+  flex-wrap: wrap;
+}
+
+.hurst-label {
+  color: #aaa;
+  font-size: 0.9em;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.hurst-number {
+  font-size: 1.4em;
+  font-weight: bold;
+  font-family: 'Courier New', monospace;
+  padding: 0.25em 0.75em;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.hurst-number.trending {
+  color: #ef4444;
+}
+
+.hurst-number.mean-reverting {
+  color: #22c55e;
+}
+
+.hurst-number.random {
+  color: #f59e0b;
+}
+
+.hurst-interpretation {
+  color: #d0d0d0;
+  font-size: 0.95em;
+  font-weight: 600;
+}
+
+/* Out-of-Sample Comparison */
+.hurst-oos-comparison {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75em;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+  margin-bottom: 1em;
+  font-size: 0.9em;
+  gap: 1em;
+}
+
+.hurst-oos-comparison span {
+  color: #aaa;
+}
+
+.hurst-oos-comparison span:last-child {
+  font-weight: bold;
+}
+
+/* Alignment Explanation Box */
+.alignment-explanation {
+  background: rgba(255, 149, 0, 0.1);
+  border: 1px solid #ff9500;
+  padding: 0.75em;
+  border-radius: 4px;
+  margin-bottom: 1em;
+  font-size: 0.9em;
+}
+
+.alignment-explanation p {
+  margin: 0;
+  color: #d0d0d0;
+}
+
+/* Enhanced Alignment Boxes */
+.alignment-good {
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid #22c55e;
+  border-left: 4px solid #22c55e;
+  padding: 1em;
+  border-radius: 6px;
+  color: #d0d0d0;
+}
+
+.alignment-good > strong {
+  color: #22c55e;
+  display: block;
+  margin-bottom: 0.75em;
+}
+
+.alignment-good p {
+  margin: 0.4em 0;
+  font-size: 0.95em;
+  line-height: 1.5;
+}
+
+.alignment-good p:first-of-type {
+  color: #22c55e;
+  font-weight: 600;
+}
+
+.alignment-caution {
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid #f59e0b;
+  border-left: 4px solid #f59e0b;
+  padding: 1em;
+  border-radius: 6px;
+  color: #d0d0d0;
+}
+
+.alignment-caution > strong {
+  color: #f59e0b;
+  display: block;
+  margin-bottom: 0.75em;
+}
+
+.alignment-caution p {
+  margin: 0.4em 0;
+  font-size: 0.95em;
+  line-height: 1.5;
+}
+
+.alignment-caution p:nth-of-type(1) {
+  color: #22c55e;
+}
+
+.alignment-caution p:nth-of-type(2) {
+  color: #22c55e;
+}
+
+.alignment-caution p:nth-of-type(3) {
+  color: #ef4444;
+}
+
+/* Make checkmarks and X visible */
+.alignment-good p:before,
+.alignment-caution p:before {
+  margin-right: 0.5em;
+}
+
+/* Explanation text styling */
+.alignment-good p:last-of-type,
+.alignment-caution p:last-of-type {
+  margin-top: 0.75em;
+  padding-top: 0.75em;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.alignment-caution p:nth-last-of-type(2) {
+  margin-top: 0.75em;
+  padding-top: 0.75em;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  color: #ff9500;
+  font-weight: bold;
+}
+
+/* Direction-Regime Check Container */
+.direction-regime-check {
+  background: #2b2f36;
+  padding: 1.2em;
+  border-radius: 8px;
+  border: 1px solid #444;
+  margin-bottom: 1em;
+}
+
+.direction-regime-check h4 {
+  margin: 0 0 1em 0;
+  color: #ff9500;
+  font-size: 0.95em;
+}
+
+/* Regime Box Styling - Keep existing but enhance */
+.regime-box {
+  padding: 1em;
+  border-radius: 6px;
+  border-left: 4px solid;
+}
+
+.regime-box.trending {
+  background-color: rgba(239, 68, 68, 0.1);
+  border-left-color: #ef4444;
+  border: 1px solid #ef4444;
+}
+
+.regime-box.mean-reverting {
+  background-color: rgba(34, 197, 94, 0.1);
+  border-left-color: #22c55e;
+  border: 1px solid #22c55e;
+}
+
+.regime-box.random {
+  background-color: rgba(245, 158, 11, 0.1);
+  border-left-color: #f59e0b;
+  border: 1px solid #f59e0b;
+}
+
+.regime-type {
+  font-size: 1em;
+  font-weight: bold;
+  margin-bottom: 0.5em;
+  padding-bottom: 0.5em;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.regime-box.trending .regime-type {
+  color: #ef4444;
+}
+
+.regime-box.mean-reverting .regime-type {
+  color: #22c55e;
+}
+
+.regime-box.random .regime-type {
+  color: #f59e0b;
+}
+
+.regime-description {
+  font-size: 0.9em;
+  margin-bottom: 0.75em;
+  color: #d0d0d0;
+}
+
+.regime-description strong {
+  color: #fff;
+}
+
+.regime-tactics {
+  background: rgba(0, 0, 0, 0.3);
+  padding: 0.75em;
+  border-radius: 4px;
+  margin-top: 0.75em;
+  font-size: 0.85em;
+}
+
+.regime-tactics ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.regime-tactics li {
+  margin: 0.3em 0;
+  padding-left: 1.2em;
+  position: relative;
+  color: #ccc;
+}
+
+.regime-tactics li:before {
+  content: "→";
+  position: absolute;
+  left: 0;
+  color: #ff9500;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .hurst-value-display {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .alignment-good p,
+  .alignment-caution p {
+    font-size: 0.9em;
+  }
+}
