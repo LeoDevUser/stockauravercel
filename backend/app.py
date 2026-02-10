@@ -14,6 +14,7 @@ origins = [
     # Vercel domains - update these after deployment
     "https://stock-aura-vercel.vercel.app",
     "https://stockaura.vercel.app",
+    "https://stockauravercel.vercel.app"
 ]
 
 # Also allow any *.vercel.app subdomain via regex
