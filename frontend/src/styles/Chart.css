@@ -26,43 +26,22 @@
   position: relative;
 }
 
-/* Ensure Lightweight Charts renders properly */
 .candlestick-chart-container canvas {
   display: block;
 }
 
-/* Responsive behavior */
 @media (max-width: 1024px) {
-  .candlestick-chart-wrapper {
-    padding: 16px;
-  }
-
-  .candlestick-chart-container {
-    height: 300px;
-  }
+  .candlestick-chart-wrapper { padding: 16px; }
+  .candlestick-chart-container { height: 300px; }
 }
 
 @media (max-width: 768px) {
-  .candlestick-chart-wrapper {
-    padding: 10px;
-  }
-
-  .chart-header {
-    margin-bottom: 10px;
-    padding-bottom: 8px;
-  }
-
-  .chart-header h3 {
-    font-size: 13px;
-  }
-
-  .candlestick-chart-container {
-    height: 250px;
-  }
+  .candlestick-chart-wrapper { padding: 10px; }
+  .chart-header { margin-bottom: 10px; padding-bottom: 8px; }
+  .chart-header h3 { font-size: 13px; }
+  .candlestick-chart-container { height: 250px; }
 }
 
 @media (max-width: 380px) {
-  .candlestick-chart-container {
-    height: 200px;
-  }
+  .candlestick-chart-container { height: 200px; }
 }

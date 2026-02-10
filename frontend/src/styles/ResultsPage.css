@@ -1,19 +1,19 @@
 .ticker-info {
-	color: #eb7d28;
+  color: #eb7d28;
 }
 
 .results-page {
-	background: #25282f;
-	min-height: 100vh;
-	overflow-x: hidden;
+  background: #25282f;
+  min-height: 100vh;
+  overflow-x: hidden;
 }
 
 .nav {
-	display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 5px;
-    padding: 20px;
-    align-items: start;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 10px;
+  padding: 15px 20px;
+  align-items: center;
 }
 
 /* Trading Parameters Input */
@@ -24,7 +24,7 @@
   border-radius: 8px;
   border: 1px solid #444;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 2em;
 }
 
@@ -60,7 +60,7 @@
   color: #ff9500;
   font-family: 'Courier New', monospace;
   font-weight: bold;
-  font-size: 16px; /* Prevents iOS zoom on focus */
+  font-size: 16px;
   text-align: right;
 }
 
@@ -80,98 +80,95 @@
   color: #666;
   font-size: 0.85em;
   line-height: 1.4;
-  margin-left: 0;
 }
 
 .home-search {
-	display: grid;
-	grid-template-rows: repeat(2,1fr);
-	grid-column: span 2;
-	width: 100%;
-}
-.search-section-landing {
-	align-self: end;
-	grid-row: 2;
-	width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-end;
 }
 
+.search-section-landing {
+  width: 100%;
+}
+
+/* KEY FIX: Constrain home icon with explicit dimensions */
 .home {
-	justify-self: end;
-	align-self: end;
-	grid-row: 1;
+  display: flex;
+  justify-content: flex-end;
 }
 
 .home img {
-	width: 20%;
-	height: 20%;
-	cursor: pointer;
-	display: block;
-	margin-left: auto;
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+  display: block;
 }
 
+/* KEY FIX: Constrain logo with explicit dimensions */
 .logo-dark {
-	display: flex;
-	flex-direction: row;
-	align-items: center;
-	justify-content: flex-start;
+  display: flex;
+  align-items: center;
 }
 
 .logo-dark img {
-	margin-top: 1px;
-	object-fit: contain;
-	width: 60%;
-	height: 60%;
-	margin-bottom: 1px;
-	cursor: pointer;
+  height: 40px;
+  width: auto;
+  object-fit: contain;
+  cursor: pointer;
 }
 
+/* KEY FIX: Removed negative margins — they break mobile completely */
 .ticker-info {
-	align-self: center;
-	display: grid;
-	margin-left: -100px;
-	grid-template-rows: repeat(2,1fr);
-	margin-bottom: -100px
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
 }
 
 .ticker-info h1 {
-	display: flex;
-	flex-direction: column;
+  margin: 0;
+  font-size: 1.1em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .ticker-info h2 {
-	display: flex;
-	flex-direction: column;
+  margin: 0;
+  font-size: 0.85em;
+  font-weight: normal;
 }
 
 .search-section {
-	display: flex;
-	flex-direction: row;
-	align-items: center;
-	justify-content: center;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
 }
 
-/* Container for the three main sections - ROW LAYOUT */
+/* Container for the three main sections */
 .results-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    padding: 20px;
-	color: white;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
+  color: white;
 }
 
-/* Wrapper for first row (Key Metrics + Statistical Tests) */
 .results-grid-row {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
 }
 
 .section {
-    background: #2b2f36;
-    padding: 20px;
-    border-radius: 8px;
-    width: 100%;
-    box-sizing: border-box;
+  background: #2b2f36;
+  padding: 20px;
+  border-radius: 8px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .section h3 {
@@ -180,18 +177,16 @@
   font-size: 1.1em;
 }
 
-/* Chart section spans full width */
 .section.visual-summary {
-    grid-column: 1 / -1;
-    min-height: 500px;
+  grid-column: 1 / -1;
+  min-height: 400px;
 }
 
-/* Trading Verdict Section */
 .trading-verdict-section {
   margin: 0 20px;
 }
 
-/* Detailed Metrics (Collapsible) */
+/* Detailed Metrics */
 .detailed-metrics {
   background: #2b2f36;
   padding: 1.5em 2em;
@@ -226,70 +221,60 @@
 }
 
 .metrics-grid {
-    display: flex;
-    flex-direction: row;
-    gap: 15px;
-    flex-wrap: wrap;
-    margin-top: 1em;
+  display: flex;
+  flex-direction: row;
+  gap: 15px;
+  flex-wrap: wrap;
+  margin-top: 1em;
 }
 
 .delisted-container {
-	display: grid;
-	grid-template-rows: repeat(3,1fr);
-	place-items: center;
-	width: 100vw;
-	height: 100vh;
-	color: #eb7d28;
-	background: #25282f;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2em;
+  width: 100%;
+  min-height: 100vh;
+  color: #eb7d28;
+  background: #25282f;
+  padding: 2em;
+  box-sizing: border-box;
+  text-align: center;
 }
 
 .delisted-error {
-	grid-row: 1;
-	font-size: 100%;
-	align-self:self-end;
+  font-size: 1.1em;
 }
 
 .delisted-go-back {
-	grid-row: 3;
-	font-size: 100%;
-	align-self:self-start;
+  font-size: 1em;
 }
+
 .delisted-container img {
-	grid-row: 2;
-	width: 10%;
+  width: 60px;
+  height: 60px;
 }
 
 .loading-page, .no-results {
-	display: grid;
-	color: #eb7d28;
-	background: #25282f;
-	width: 100%;
-	height: 100vh;
-	place-items: center;
-	font-size: 300%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #eb7d28;
+  background: #25282f;
+  width: 100%;
+  height: 100vh;
+  font-size: 1.5em;
 }
 
-/* Out-of-Sample value display */
-.value-secondary {
-  font-size: 0.8em;
-  color: #888;
-  margin-top: 0.3em;
-  font-weight: normal;
-}
-
-.hurst-value-oos {
-  font-size: 0.9em;
-  color: #aaa;
-  margin-top: 0.3em;
-}
-
-/* Update status indicators for dark theme */
+/* Status indicators */
 .status {
   padding: 0.5em;
   border-radius: 4px;
   font-weight: 500;
   margin: 0.5em 0;
   display: inline-block;
+  word-break: break-word;
 }
 
 .status.stationary {
@@ -316,14 +301,14 @@
   border: 1px solid #ef4444;
 }
 
-/* Update metric card styling */
+/* Metric card */
 .metric-card {
   background: #2b2f36;
   padding: 1em;
   border-radius: 8px;
   border: 1px solid #444;
   flex: 1;
-  min-width: 150px;
+  min-width: 140px;
 }
 
 .metric-card label {
@@ -347,20 +332,12 @@
   font-size: 0.8em;
 }
 
-/* Regime color highlights */
-.trending {
-  color: #ef4444;
-}
+/* Regime colors */
+.trending { color: #ef4444; }
+.mean-reverting { color: #22c55e; }
+.neutral { color: #f59e0b; }
 
-.mean-reverting {
-  color: #22c55e;
-}
-
-.neutral {
-  color: #f59e0b;
-}
-
-/* Summary text improvements */
+/* Summary text */
 .summary-text {
   margin-top: 1em;
 }
@@ -372,10 +349,8 @@
   font-size: 0.95em;
 }
 
-/* Gauge improvements */
-.gauge-container {
-  margin: 1em 0;
-}
+/* Gauge */
+.gauge-container { margin: 1em 0; }
 
 .gauge {
   height: 20px;
@@ -398,11 +373,9 @@
   margin-bottom: 0.5em;
 }
 
-.gauge-labels .center {
-  text-align: center;
-}
+.gauge-labels .center { text-align: center; }
 
-/* Stats styling */
+/* Stats */
 .stat {
   margin-bottom: 1em;
   padding: 1em;
@@ -425,13 +398,8 @@
   font-weight: bold;
 }
 
-.stat .value.negative {
-  color: #ef4444;
-}
-
-.stat .value.positive {
-  color: #22c55e;
-}
+.stat .value.negative { color: #ef4444; }
+.stat .value.positive { color: #22c55e; }
 
 .stat .score {
   color: #ff9500;
@@ -508,19 +476,18 @@
 
 /* ===== TABLET ===== */
 @media (max-width: 1024px) {
-    .results-grid-row {
-        grid-template-columns: 1fr;
-    }
-    
-    .trading-parameters-input {
-      grid-template-columns: 1fr;
-      gap: 1.5em;
-    }
+  .results-grid-row {
+    grid-template-columns: 1fr;
+  }
+
+  .trading-parameters-input {
+    grid-template-columns: 1fr;
+    gap: 1.5em;
+  }
 }
 
 /* ===== MOBILE ===== */
 @media (max-width: 768px) {
-  /* --- Nav overhaul --- */
   .nav {
     display: flex;
     flex-direction: column;
@@ -528,41 +495,25 @@
     padding: 12px;
   }
 
+  /* Row with logo + home icon */
+  .nav > .logo-dark,
+  .nav > .home-search {
+    width: 100%;
+  }
+
   .logo-dark img {
-    width: 45%;
-    max-width: 160px;
-  }
-
-  .ticker-info {
-    margin-left: 0;
-    margin-bottom: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-  }
-
-  .ticker-info h1 {
-    font-size: 1.05em;
-    margin: 0;
-    word-break: break-word;
-  }
-
-  .ticker-info h2 {
-    font-size: 0.8em;
-    margin: 0;
+    height: 32px;
   }
 
   .home-search {
-    display: flex;
     flex-direction: column-reverse;
-    gap: 8px;
-    grid-column: unset;
+    align-items: stretch;
   }
 
   .home {
-    justify-self: unset;
-    align-self: flex-end;
-    grid-row: unset;
+    position: absolute;
+    top: 12px;
+    right: 12px;
   }
 
   .home img {
@@ -570,12 +521,16 @@
     height: 28px;
   }
 
-  .search-section-landing {
-    grid-row: unset;
-    align-self: unset;
+  .ticker-info h1 {
+    font-size: 0.95em;
+    white-space: normal;
   }
 
-  /* --- Trading parameters --- */
+  .ticker-info h2 {
+    font-size: 0.75em;
+  }
+
+  /* Parameters */
   .trading-parameters-input {
     margin: 0 10px 12px 10px;
     padding: 1em;
@@ -597,10 +552,9 @@
   .parameter-group input {
     width: 100%;
     max-width: 140px;
-    font-size: 16px; /* Prevents iOS zoom */
   }
 
-  /* --- Results grid --- */
+  /* Results grid */
   .results-grid {
     padding: 10px;
     gap: 12px;
@@ -616,19 +570,17 @@
   }
 
   .section h3 {
-    font-size: 1em;
+    font-size: 0.95em;
   }
 
   .section.visual-summary {
     min-height: unset;
   }
 
-  /* --- Trading verdict --- */
   .trading-verdict-section {
     margin: 0 10px;
   }
 
-  /* --- Detailed metrics --- */
   .detailed-metrics {
     margin: 10px;
     padding: 1em;
@@ -642,55 +594,16 @@
     min-width: unset;
   }
 
-  /* --- Metric boxes --- */
-  .metric-box {
-    padding: 0.75em;
-  }
+  .stat .score { font-size: 1.4em; }
+  .stat .value { font-size: 1.2em; }
 
-  .stat .score {
-    font-size: 1.4em;
-  }
-
-  .stat .value {
-    font-size: 1.2em;
-  }
-
-  /* --- Loading & error --- */
   .loading-page, .no-results {
-    font-size: 1.5em;
-    padding: 20px;
-  }
-
-  .delisted-container {
-    padding: 20px;
-  }
-
-  .delisted-container img {
-    width: 20%;
-  }
-
-  .delisted-error {
-    font-size: 1em;
-    padding: 0 15px;
-    text-align: center;
+    font-size: 1.2em;
   }
 }
 
-/* ===== VERY SMALL PHONES ===== */
 @media (max-width: 380px) {
-  .ticker-info h1 {
-    font-size: 0.9em;
-  }
-
-  .ticker-info h2 {
-    font-size: 0.75em;
-  }
-
-  .parameter-group input {
-    max-width: 120px;
-  }
-
-  .section {
-    padding: 10px;
-  }
+  .ticker-info h1 { font-size: 0.85em; }
+  .ticker-info h2 { font-size: 0.7em; }
+  .section { padding: 10px; }
 }
