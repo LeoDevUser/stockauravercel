@@ -1,14 +1,15 @@
 .candlestick-chart-wrapper {
-  background: #2b2f36; /* CRITICAL FIX: Changed from white (#ffffff) to dark */
+  background: #2b2f36;
   border-radius: 8px;
   padding: 20px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   height: 100%;
+  box-sizing: border-box;
 }
 
 .chart-header {
   margin-bottom: 16px;
-  border-bottom: 1px solid #444; /* Changed from #e5e7eb to match dark theme */
+  border-bottom: 1px solid #444;
   padding-bottom: 12px;
 }
 
@@ -16,7 +17,7 @@
   margin: 0;
   font-size: 16px;
   font-weight: 600;
-  color: #ff9500; /* Changed from #1f2937 to match theme */
+  color: #ff9500;
 }
 
 .candlestick-chart-container {
@@ -43,14 +44,25 @@
 
 @media (max-width: 768px) {
   .candlestick-chart-wrapper {
-    padding: 12px;
+    padding: 10px;
+  }
+
+  .chart-header {
+    margin-bottom: 10px;
+    padding-bottom: 8px;
   }
 
   .chart-header h3 {
-    font-size: 14px;
+    font-size: 13px;
   }
 
   .candlestick-chart-container {
     height: 250px;
+  }
+}
+
+@media (max-width: 380px) {
+  .candlestick-chart-container {
+    height: 200px;
   }
 }

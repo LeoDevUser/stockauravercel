@@ -3,6 +3,7 @@
   padding: 2em;
   border-radius: 8px;
   margin-bottom: 2em;
+  box-sizing: border-box;
 }
 
 .verdict-title {
@@ -52,6 +53,7 @@
   margin: 0;
   font-size: 1.4em;
   font-weight: bold;
+  word-break: break-word;
 }
 
 .verdict-badges {
@@ -67,6 +69,7 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  white-space: nowrap;
 }
 
 .badge.risk-medium,
@@ -82,7 +85,8 @@
   border: 1px solid #e0e0e0;
 }
 
-.badge.risk-high {
+.badge.risk-high,
+.badge.risk-very_high {
   background: rgba(239, 68, 68, 0.15);
   color: #ef4444;
   border: 1px solid #ef4444;
@@ -185,7 +189,7 @@
 
 .metrics-grid-compact {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
   gap: 0.75em;
 }
 
@@ -252,11 +256,21 @@
   font-weight: bold;
   color: #fff;
   font-family: 'Courier New', monospace;
+  word-break: break-all;
 }
 
 .position-item small {
   font-size: 0.8em;
   color: #666;
+}
+
+/* Liquidity failure warning */
+.liquidity-failure-warning {
+  background: rgba(245, 158, 11, 0.08);
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  border-radius: 8px;
+  padding: 1.25em;
+  margin-bottom: 1.5em;
 }
 
 /* Market Context */
@@ -299,6 +313,7 @@
   font-size: 0.95em;
   color: #d0d0d0;
   line-height: 1.5;
+  word-break: break-word;
 }
 
 /* Liquidity & Costs */
@@ -396,7 +411,7 @@
   color: #ff9500;
 }
 
-/* Responsive */
+/* ===== TABLET ===== */
 @media (max-width: 1024px) {
   .verdict-header {
     flex-direction: column;
@@ -424,20 +439,109 @@
   }
 }
 
+/* ===== MOBILE ===== */
 @media (max-width: 768px) {
   .trading-verdict-container {
-    padding: 1.5em;
+    padding: 1em;
+  }
+
+  .verdict-title {
+    font-size: 1.1em;
   }
 
   .verdict-main {
-    padding: 1.5em;
+    padding: 1em;
+  }
+
+  .verdict-header h3 {
+    font-size: 1.1em;
+  }
+
+  .verdict-summary {
+    font-size: 0.95em;
+  }
+
+  .verdict-badges {
+    gap: 0.5em;
+  }
+
+  .badge {
+    padding: 0.3em 0.6em;
+    font-size: 0.75em;
   }
 
   .metrics-grid-compact {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5em;
+  }
+
+  .metric-item {
+    padding: 0.6em;
+  }
+
+  .metric-item strong {
+    font-size: 1.1em;
+  }
+
+  .metric-item span {
+    font-size: 0.75em;
+  }
+
+  .position-details {
+    padding: 1em;
+  }
+
+  .position-grid {
     grid-template-columns: 1fr;
+    gap: 0.75em;
+  }
+
+  .position-item .value {
+    font-size: 1em;
+  }
+
+  .market-context {
+    padding: 1em;
+  }
+
+  .context-grid {
+    grid-template-columns: 1fr;
+    gap: 0.75em;
+  }
+
+  .liquidity-costs {
+    padding: 1em;
   }
 
   .costs-grid {
     grid-template-columns: 1fr;
+    gap: 0.5em;
+  }
+
+  .cost-item.total {
+    grid-column: unset;
+  }
+
+  .failure-reasons {
+    padding: 1em;
+  }
+
+  .passing-metrics {
+    padding: 1em;
+  }
+
+  .verdict-disclaimer {
+    font-size: 0.85em;
+    padding: 0.85em;
+  }
+}
+
+@media (max-width: 380px) {
+  .metrics-grid-compact {
+    grid-template-columns: 1fr;
+  }
+
+  .verdict-header h3 {
+    font-size: 1em;
   }
 }

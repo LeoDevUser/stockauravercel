@@ -14,6 +14,7 @@
   width: 100%;
   max-width: 600px;
   padding: 2rem;
+  box-sizing: border-box;
 }
 
 .logo {
@@ -43,12 +44,13 @@
 .search-input {
   width: 100%;
   padding: 1rem 1.5rem;
-  font-size: 1rem;
+  font-size: 16px; /* Prevents iOS zoom */
   border: 2px solid #ddd;
   border-radius: 8px;
   outline: none;
   transition: all 0.3s ease;
   background: white;
+  box-sizing: border-box;
 }
 
 .search-input:focus {
@@ -106,4 +108,44 @@
 	font-size:  0.5rem;
 	cursor: pointer;
 	text-decoration: underline;
+}
+
+/* ===== MOBILE ===== */
+@media (max-width: 768px) {
+  .landing-content {
+    gap: 2rem;
+    padding: 1rem;
+  }
+
+  .logo img {
+    width: 60vw;
+    height: auto;
+    max-height: 30vh;
+    margin-top: 4vh;
+    margin-bottom: -2vh;
+  }
+
+  .search-input {
+    padding: 0.85rem 1rem;
+    font-size: 16px;
+  }
+
+  .suggestion-item {
+    padding: 0.6rem 1rem;
+  }
+
+  .go-top h1 {
+    font-size: 1.8em;
+  }
+}
+
+@media (max-width: 380px) {
+  .logo img {
+    width: 70vw;
+    margin-top: 3vh;
+  }
+
+  .search-input {
+    padding: 0.75rem 0.85rem;
+  }
 }

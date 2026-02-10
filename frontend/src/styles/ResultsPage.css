@@ -5,6 +5,7 @@
 .results-page {
 	background: #25282f;
 	min-height: 100vh;
+	overflow-x: hidden;
 }
 
 .nav {
@@ -59,7 +60,7 @@
   color: #ff9500;
   font-family: 'Courier New', monospace;
   font-weight: bold;
-  font-size: 1em;
+  font-size: 16px; /* Prevents iOS zoom on focus */
   text-align: right;
 }
 
@@ -170,6 +171,7 @@
     padding: 20px;
     border-radius: 8px;
     width: 100%;
+    box-sizing: border-box;
 }
 
 .section h3 {
@@ -265,18 +267,6 @@
 	height: 100vh;
 	place-items: center;
 	font-size: 300%;
-}
-
-/* Responsive adjustment for tablets/phones */
-@media (max-width: 1024px) {
-    .results-grid-row {
-        grid-template-columns: 1fr;
-    }
-    
-    .trading-parameters-input {
-      grid-template-columns: 1fr;
-      gap: 1.5em;
-    }
 }
 
 /* Out-of-Sample value display */
@@ -514,4 +504,193 @@
   color: #ff9500;
   margin-top: 0.5em;
   font-weight: 600;
+}
+
+/* ===== TABLET ===== */
+@media (max-width: 1024px) {
+    .results-grid-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .trading-parameters-input {
+      grid-template-columns: 1fr;
+      gap: 1.5em;
+    }
+}
+
+/* ===== MOBILE ===== */
+@media (max-width: 768px) {
+  /* --- Nav overhaul --- */
+  .nav {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 12px;
+  }
+
+  .logo-dark img {
+    width: 45%;
+    max-width: 160px;
+  }
+
+  .ticker-info {
+    margin-left: 0;
+    margin-bottom: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .ticker-info h1 {
+    font-size: 1.05em;
+    margin: 0;
+    word-break: break-word;
+  }
+
+  .ticker-info h2 {
+    font-size: 0.8em;
+    margin: 0;
+  }
+
+  .home-search {
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 8px;
+    grid-column: unset;
+  }
+
+  .home {
+    justify-self: unset;
+    align-self: flex-end;
+    grid-row: unset;
+  }
+
+  .home img {
+    width: 28px;
+    height: 28px;
+  }
+
+  .search-section-landing {
+    grid-row: unset;
+    align-self: unset;
+  }
+
+  /* --- Trading parameters --- */
+  .trading-parameters-input {
+    margin: 0 10px 12px 10px;
+    padding: 1em;
+    grid-template-columns: 1fr;
+    gap: 1em;
+  }
+
+  .parameter-group label {
+    flex-wrap: wrap;
+    gap: 0.4em;
+  }
+
+  .parameter-group label > span:first-child {
+    min-width: unset;
+    width: 100%;
+    font-size: 0.85em;
+  }
+
+  .parameter-group input {
+    width: 100%;
+    max-width: 140px;
+    font-size: 16px; /* Prevents iOS zoom */
+  }
+
+  /* --- Results grid --- */
+  .results-grid {
+    padding: 10px;
+    gap: 12px;
+  }
+
+  .results-grid-row {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .section {
+    padding: 12px;
+  }
+
+  .section h3 {
+    font-size: 1em;
+  }
+
+  .section.visual-summary {
+    min-height: unset;
+  }
+
+  /* --- Trading verdict --- */
+  .trading-verdict-section {
+    margin: 0 10px;
+  }
+
+  /* --- Detailed metrics --- */
+  .detailed-metrics {
+    margin: 10px;
+    padding: 1em;
+  }
+
+  .metrics-grid {
+    flex-direction: column;
+  }
+
+  .metric-card {
+    min-width: unset;
+  }
+
+  /* --- Metric boxes --- */
+  .metric-box {
+    padding: 0.75em;
+  }
+
+  .stat .score {
+    font-size: 1.4em;
+  }
+
+  .stat .value {
+    font-size: 1.2em;
+  }
+
+  /* --- Loading & error --- */
+  .loading-page, .no-results {
+    font-size: 1.5em;
+    padding: 20px;
+  }
+
+  .delisted-container {
+    padding: 20px;
+  }
+
+  .delisted-container img {
+    width: 20%;
+  }
+
+  .delisted-error {
+    font-size: 1em;
+    padding: 0 15px;
+    text-align: center;
+  }
+}
+
+/* ===== VERY SMALL PHONES ===== */
+@media (max-width: 380px) {
+  .ticker-info h1 {
+    font-size: 0.9em;
+  }
+
+  .ticker-info h2 {
+    font-size: 0.75em;
+  }
+
+  .parameter-group input {
+    max-width: 120px;
+  }
+
+  .section {
+    padding: 10px;
+  }
 }
