@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { createChart, ColorType, CandlestickSeries } from 'lightweight-charts'
+import { createChart, ColorType, CandlestickSeries, type Time } from 'lightweight-charts'
 import '../styles/Chart.css'
 
 interface OHLCData {
@@ -25,7 +25,7 @@ export default function Chart({ ohlcData, ticker }: CandlestickChartProps) {
     // Transform OHLC data to format expected by Lightweight Charts
     const candleData = ohlcData.map((candle) => {
       const date = new Date(candle.Date)
-      const time = Math.floor(date.getTime() / 1000) // Unix timestamp
+      const time = Math.floor(date.getTime() / 1000) as Time
 
       return {
         time,
