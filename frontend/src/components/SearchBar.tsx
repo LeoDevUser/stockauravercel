@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import '../styles/SearchBar.css'
+import { apiUrl } from '../utils/api';
 
 interface Suggestion {
   ticker: string
@@ -29,7 +30,7 @@ export default function SearchBar({ onSelect, placeholder = "Search..." }: Searc
     const debounce = setTimeout(async () => {
       setLoading(true)
       try {
-        const response = await fetch(`/api/search?q=${input.toUpperCase()}&limit=10`)
+        const response = await fetch(apiUrl(`/api/search?q=${input.toUpperCase()}&limit=10`))
         const data: Suggestion[] = await response.json()
         setSuggestions(data)
 		setSelectedIndex(-1)

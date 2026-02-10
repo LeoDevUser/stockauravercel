@@ -8,6 +8,7 @@ import logo from '../assets/logo-dark.png'
 import home from '../assets/home.png'
 import Tooltip from '../components/Tooltip'
 import { tooltipContent } from '../utils/TooltipContent'
+import { apiUrl } from '../utils/api'
 
 export interface AnalysisResult {
   ticker: string
@@ -113,7 +114,7 @@ export default function ResultsPage() {
       try {
         setLoading(true)
         const response = await fetch(
-          `/api/analyze?ticker=${ticker}&period=5y&window_days=5`
+          apiUrl(`/api/analyze?ticker=${ticker}&period=5y&window_days=5`)
         )
         const data: AnalysisResult = await response.json()
         setResults(data)

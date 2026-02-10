@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import '../styles/Top.css'
 import logo from '../assets/logo-dark.png'
 import home from '../assets/home.png'
+import { apiUrl } from '../utils/api'
 
 interface TopStock {
   ticker: string
@@ -51,7 +52,7 @@ export default function TopStocksPage() {
     const loadTopStocks = async () => {
       try {
         setLoading(true)
-        const response = await fetch('/api/top')
+        const response = await fetch(apiUrl('/api/top'))
         
         if (!response.ok) {
           throw new Error('Failed to load top stocks data')
