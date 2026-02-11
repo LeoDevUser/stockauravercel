@@ -113,6 +113,10 @@
   text-decoration: underline;
 }
 
+.search-input {
+  color: #333;
+}
+
 /* ===== MOBILE ===== */
 @media (max-width: 768px) {
   .landing-content {
