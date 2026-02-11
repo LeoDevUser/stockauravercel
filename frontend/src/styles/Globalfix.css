@@ -1,14 +1,9 @@
-/* ================================================================
-   GLOBAL MOBILE FIX — Add this import FIRST in your main App.tsx or main.tsx
-   import './styles/GlobalFix.css'
-   ================================================================ */
-
-/* Force all elements to respect container width */
 *, *::before, *::after {
   box-sizing: border-box;
 }
 
 html {
+  /* CRITICAL: This prevents ANY element from expanding the viewport */
   overflow-x: hidden;
   -webkit-text-size-adjust: 100%;
 }
@@ -17,25 +12,26 @@ body {
   margin: 0;
   padding: 0;
   overflow-x: hidden;
+  /* CRITICAL: max-width prevents body from being wider than screen */
+  max-width: 100vw;
   background: #25282f;
   color: #d0d0d0;
   font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
-/* Prevent anything from causing horizontal scroll */
 #root {
   overflow-x: hidden;
   width: 100%;
   max-width: 100vw;
 }
 
-/* All images must be contained */
+/* CRITICAL: Force ALL images to never exceed their container */
 img {
   max-width: 100%;
   height: auto;
 }
 
-/* Prevent iOS zoom on input focus — inputs must be >= 16px */
+/* Prevent iOS zoom on input focus */
 input, select, textarea {
   font-size: 16px;
 }
