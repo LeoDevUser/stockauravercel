@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Debug Test</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background: #25282f;
+            color: white;
+            font-family: sans-serif;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+        .debug-info {
+            background: #2b2f36;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #444;
+        }
+        .debug-info h3 { color: #ff9500; margin-bottom: 10px; }
+        .debug-info p { margin: 5px 0; font-size: 14px; }
+        .green { color: #22c55e; }
+        .red { color: #ef4444; }
+        .orange { color: #ff9500; }
+
+        /* TEST BOXES — these change color based on media queries */
+        .test-box {
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            font-weight: bold;
+            font-size: 18px;
+            text-align: center;
+        }
+
+        /* DEFAULT: Red = media query NOT firing */
+        .test-768 { background: #ef4444; }
+        .test-1024 { background: #ef4444; }
+        .test-480 { background: #ef4444; }
+
+        /* If 768px fires → green */
+        @media (max-width: 768px) {
+            .test-768 { background: #22c55e; }
+        }
+
+        /* If 1024px fires → green */
+        @media (max-width: 1024px) {
+            .test-1024 { background: #22c55e; }
+        }
+
+        /* If 480px fires → green */
+        @media (max-width: 480px) {
+            .test-480 { background: #22c55e; }
+        }
+
+        /* Layout test */
+        .grid-test {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .grid-item {
+            background: #444;
+            padding: 15px;
+            border-radius: 6px;
+            text-align: center;
+        }
+        @media (max-width: 768px) {
+            .grid-test {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="debug-info">
+        <h3>📱 Mobile Debug Test</h3>
+        <p>If you see this page, the server is working.</p>
+        <p>Viewport width: <span id="vw" class="orange">loading...</span></p>
+        <p>Screen width: <span id="sw" class="orange">loading...</span></p>
+        <p>Device pixel ratio: <span id="dpr" class="orange">loading...</span></p>
+        <p>User agent: <span id="ua" class="orange" style="font-size:11px; word-break:break-all;">loading...</span></p>
+    </div>
+
+    <div class="debug-info">
+        <h3>Media Query Test</h3>
+        <p>RED = not firing, GREEN = firing</p>
+    </div>
+
+    <div class="test-box test-1024">max-width: 1024px</div>
+    <div class="test-box test-768">max-width: 768px</div>
+    <div class="test-box test-480">max-width: 480px</div>
+
+    <div class="debug-info">
+        <h3>Grid Test (should be 1 column on mobile)</h3>
+    </div>
+    <div class="grid-test">
+        <div class="grid-item">Box A</div>
+        <div class="grid-item">Box B</div>
+    </div>
+
+    <div class="debug-info">
+        <h3>Image Overflow Test</h3>
+        <p>This box is 2000px wide. If it breaks the layout, overflow is not hidden:</p>
+        <div style="width: 2000px; height: 20px; background: linear-gradient(90deg, #22c55e, #ef4444);"></div>
+        <p style="margin-top:10px;">Viewport after overflow test: <span id="vw2" class="orange">loading...</span></p>
+    </div>
+
+    <script>
+        document.getElementById('vw').textContent = window.innerWidth + 'px';
+        document.getElementById('sw').textContent = screen.width + 'px';
+        document.getElementById('dpr').textContent = window.devicePixelRatio;
+        document.getElementById('ua').textContent = navigator.userAgent;
+        
+        // Check after a tick in case overflow changes things
+        setTimeout(() => {
+            document.getElementById('vw2').textContent = window.innerWidth + 'px';
+        }, 100);
+    </script>
+</body>
+</html>
