@@ -1,8 +1,7 @@
-#!/usr/bin/env python3
 """
-StockAura — Top 800 Market Cap Scanner
+StockAura — Top Market Cap Scanner
 
-Analyzes the top 800 stocks by market cap for trading opportunities.
+Analyzes the top stocks by market cap for trading opportunities.
 Uses 30 Hurst shuffles (vs 50 for individual lookups) for faster batch processing.
 
 Signal tiers:
@@ -13,6 +12,7 @@ Signal tiers:
 """
 
 import json
+import re
 import sys
 from typing import Dict, List
 import time
@@ -27,7 +27,7 @@ from analysis import analyze_stock as run_analysis
 # CONFIGURATION
 # ═══════════════════════════════════════════════════════════════════════════════
 TICKERS_FILE = "tickers.json"
-TOP_N_STOCKS = 800                  # Top 800 by market cap
+TOP_N_STOCKS = 1200                 # Top 1200 by market cap (pre-filter)
 REQUEST_DELAY = 1.0                 # Seconds between API requests
 MAX_RETRIES = 3
 RETRY_DELAY = 5
@@ -38,34 +38,102 @@ BATCH_SHUFFLES = 30                 # Fewer shuffles for speed (50 for individua
 last_request_time = 0
 
 
+def should_skip(ticker: str, title: str) -> bool:
+    """
+    Filter out tickers that shouldn't be in the stock screener:
+    - ETFs, trusts, index funds
+    - OTC foreign ordinaries (thin US volume, often duplicates of primary listings)
+    """
+    t = ticker.upper()
+    title_up = title.upper()
+
+    # Skip ETFs / trusts / index funds
+    # Use word-boundary-aware matching to avoid false positives
+    # (e.g. "NETFLIX" contains "ETF", "NORTHERN TRUST CORP" contains "TRUST")
+
+    # These match as whole words only
+    etf_word_patterns = [
+        r'\bETF\b',           # "ETF" as standalone word (not inside NETFLIX)
+        r'\bSPDR\b',
+        r'\bISHARES\b',
+        r'\bVANGUARD\b',
+        r'\bPROSHARES\b',
+        r'\bDIREXION\b',
+        r'\bWISDOMTREE\b',
+        r'\bGRAYSCALE\b',
+    ]
+    if any(re.search(pat, title_up) for pat in etf_word_patterns):
+        return True
+
+    # "TRUST" only if it looks like a fund/ETF trust, not a REIT or bank
+    # Fund trusts: "XXX TRUST" at end, or "XXX TRUST," — but NOT "TRUST CORP", "TRUST INC"
+    if ' TRUST' in title_up:
+        # Keep if it's a company (REIT, bank, etc.)
+        company_suffixes = ['CORP', 'INC', 'CO.', 'CO,', 'LTD', 'GROUP', 'BANCORP']
+        is_company = any(suf in title_up for suf in company_suffixes)
+        # Keep REITs (they're stocks, not ETFs)
+        is_reit = any(kw in title_up for kw in ['REALTY', 'PROPERTY', 'INDUSTRIAL', 'ESSEX'])
+        if not is_company and not is_reit:
+            return True
+
+    # Specific fund names
+    if 'INVESCO QQQ' in title_up:
+        return True
+
+    # Skip likely OTC foreign ordinaries / unsponsored ADRs
+    # Pattern: 5+ character tickers ending in F or Y (e.g. RTNTF, DTEGY, HTHIY)
+    # This catches thin-volume OTC listings while preserving normal tickers
+    # like F (Ford), COF (Capital One), SONY (4 chars), INFY (4 chars)
+    if len(t) >= 5 and t[-1] in ('F', 'Y'):
+        return True
+
+    # Skip tickers with dots (foreign exchanges like .L, .TO, .DE)
+    if '.' in t:
+        return True
+
+    return False
+
+
 def load_tickers(filepath: str, limit: int = None) -> List[Dict[str, str]]:
-    """Load tickers from JSON file (assumes sorted by market cap)"""
+    """Load tickers from JSON file, filtering out ETFs and OTC foreign ordinaries."""
     with open(filepath, 'r') as f:
         data = json.load(f)
-    
+
     tickers = []
+    skipped = 0
+
     for key, value in data.items():
+        ticker = value['ticker']
+        title = value['title']
+
+        if should_skip(ticker, title):
+            skipped += 1
+            continue
+
         tickers.append({
-            'ticker': value['ticker'],
-            'title': value['title']
+            'ticker': ticker,
+            'title': title
         })
         if limit and len(tickers) >= limit:
             break
-    
+
+    print(f"📋 Filtered out {skipped} tickers (ETFs, trusts, OTC/ADR, foreign exchanges)")
+    print(f"✅ {len(tickers)} stocks passed filter")
+
     return tickers
 
 
 def rate_limited_sleep():
     """Enforce rate limiting"""
     global last_request_time
-    
+
     current_time = time.time()
     time_since_last = current_time - last_request_time
-    
+
     if time_since_last < REQUEST_DELAY:
         sleep_time = REQUEST_DELAY - time_since_last + random.uniform(0, 0.2)
         time.sleep(sleep_time)
-    
+
     last_request_time = time.time()
 
 
@@ -73,7 +141,7 @@ def analyze_stock_with_retry(ticker: str, title: str, retry_count: int = 0) -> D
     """Analyze with retry logic and batch-optimized shuffle count"""
     try:
         rate_limited_sleep()
-        
+
         data = run_analysis(
             ticker=ticker,
             period='5y',
@@ -82,7 +150,7 @@ def analyze_stock_with_retry(ticker: str, title: str, retry_count: int = 0) -> D
             risk_per_trade=DEFAULT_RISK_PER_TRADE,
             n_shuffles=BATCH_SHUFFLES
         )
-        
+
         if data.get('error'):
             error_msg = str(data.get('error', '')).lower()
             if ('unauthorized' in error_msg or '401' in error_msg or 'crumb' in error_msg) and retry_count < MAX_RETRIES:
@@ -90,9 +158,9 @@ def analyze_stock_with_retry(ticker: str, title: str, retry_count: int = 0) -> D
                 time.sleep(RETRY_DELAY)
                 return analyze_stock_with_retry(ticker, title, retry_count + 1)
             return None
-        
+
         score = calculate_score(data)
-        
+
         return {
             'ticker': ticker,
             'title': title,
@@ -122,7 +190,7 @@ def analyze_stock_with_retry(ticker: str, title: str, retry_count: int = 0) -> D
             'trade_quality': data.get('trade_quality'),
             'quality_label': data.get('quality_label'),
         }
-        
+
     except Exception as e:
         error_msg = str(e).lower()
         if ('unauthorized' in error_msg or '401' in error_msg or 'crumb' in error_msg) and retry_count < MAX_RETRIES:
@@ -135,7 +203,7 @@ def analyze_stock_with_retry(ticker: str, title: str, retry_count: int = 0) -> D
 def calculate_score(data: Dict) -> float:
     """
     Calculate composite score for ranking.
-    
+
     Score components:
       Predictability:   0-40 pts  (10 per test passed)
       Regime stability: 0-20 pts  (existence-based: 0/0.5/1.0 × 20)
@@ -145,14 +213,14 @@ def calculate_score(data: Dict) -> float:
       Volatility:       -5 to 0    (penalty for >50%)
     """
     score = 0.0
-    
+
     # Predictability (0-40)
     score += data.get('predictability_score', 0) * 10
-    
+
     # Regime stability (0-20) — now discrete: 0.0, 0.5, 1.0
     if data.get('regime_stability') is not None:
         score += data.get('regime_stability') * 20
-    
+
     # Edge vs friction (0-20)
     edge = data.get('expected_edge_pct', 0)
     friction = data.get('total_friction_pct', 0)
@@ -160,7 +228,7 @@ def calculate_score(data: Dict) -> float:
         ratio = edge / friction
         if ratio > 3:
             score += min(20, (ratio - 3) * 4)
-    
+
     # Signal quality (0-20) — includes speculative signals
     signal_scores = {
         # High conviction
@@ -178,15 +246,15 @@ def calculate_score(data: Dict) -> float:
         'NO_CLEAR_SIGNAL': 0, 'DO_NOT_TRADE': -50
     }
     score += signal_scores.get(data.get('final_signal', ''), 0)
-    
+
     # Liquidity bonus
     if not data.get('liquidity_failed', False):
         score += 10
-    
+
     # Volatility penalty
     if data.get('volatility') and data.get('volatility') > 50:
         score -= 5
-    
+
     return score
 
 
@@ -194,7 +262,7 @@ def get_signal_icon(signal: str) -> str:
     """Map signal to display icon"""
     if not signal:
         return '⚪'
-    
+
     if signal.startswith('SPEC_'):
         # Speculative tier — orange
         if 'BUY' in signal:
@@ -231,45 +299,45 @@ def get_signal_category(signal: str) -> str:
 def analyze_batch(tickers: List[Dict]) -> List[Dict]:
     """Analyze stocks sequentially with rate limiting"""
     results = []
-    
+
     est_minutes = len(tickers) * 1.1 / 60  # ~1.1s per stock with overhead
-    
+
     print(f"\n{'='*80}")
-    print(f"Analyzing TOP {len(tickers)} stocks by market cap")
+    print(f"Analyzing {len(tickers)} stocks (filtered from top {TOP_N_STOCKS} by market cap)")
     print(f"Rate limit: {REQUEST_DELAY}s per request | Hurst shuffles: {BATCH_SHUFFLES}")
     print(f"Estimated time: ~{est_minutes:.0f}-{est_minutes*1.5:.0f} minutes")
     print(f"{'='*80}\n")
-    
+
     start_time = time.time()
     counts = {'buy': 0, 'short': 0, 'wait': 0, 'speculative': 0}
-    
+
     for i, ticker_info in enumerate(tickers, 1):
         result = analyze_stock_with_retry(ticker_info['ticker'], ticker_info['title'])
-        
+
         if result:
             results.append(result)
-            
+
             signal = result.get('final_signal', '')
             icon = get_signal_icon(signal)
             cat = get_signal_category(signal)
             if cat in counts:
                 counts[cat] += 1
-            
+
             # Calculate ETA
             elapsed = time.time() - start_time
             rate = i / elapsed if elapsed > 0 else 0
             remaining = len(tickers) - i
             eta_minutes = (remaining / rate / 60) if rate > 0 else 0
-            
+
             # Truncate signal for display
             display_signal = signal[:22] if signal else 'N/A'
-            
+
             print(f"[{i:3d}/{len(tickers)}] {icon} {ticker_info['ticker']:6s} "
                   f"Score: {result['score']:6.1f} | {display_signal:22s} "
                   f"| ETA: {eta_minutes:4.1f}m")
         else:
             print(f"[{i:3d}/{len(tickers)}] ✗ {ticker_info['ticker']:6s} FAILED")
-        
+
         # Progress update every 50 stocks
         if i % 50 == 0:
             elapsed_mins = (time.time() - start_time) / 60
@@ -278,7 +346,7 @@ def analyze_batch(tickers: List[Dict]) -> List[Dict]:
                   f"🟢 {counts['buy']} | 🔴 {counts['short']} | "
                   f"🟡 {counts['wait']} | 🟠 {counts['speculative']} spec | "
                   f"Time: {elapsed_mins:.1f}m\n")
-    
+
     # Sort by score
     results.sort(key=lambda x: x['score'], reverse=True)
     return results
@@ -288,7 +356,7 @@ def save_results(results: List[Dict], filename: str = "top_stocks.json"):
     """Save to JSON"""
     # Save all tradeable results (not just top 50)
     tradeable = [r for r in results if r.get('final_signal') not in ('DO_NOT_TRADE', 'NO_CLEAR_SIGNAL', None)]
-    
+
     output = {
         'timestamp': datetime.now().isoformat(),
         'total_analyzed': len(results),
@@ -301,23 +369,23 @@ def save_results(results: List[Dict], filename: str = "top_stocks.json"):
         },
         'stocks': results[:100]  # Top 100 for review
     }
-    
+
     with open(filename, 'w') as f:
         json.dump(output, f, indent=2)
-    
+
     print(f"\n✅ Saved top 100 to {filename}")
     return filename
 
 
 def print_summary(results: List[Dict]):
     """Print categorized results"""
-    
+
     # Separate by tier
-    high_conviction = [r for r in results if r.get('final_signal') and 
+    high_conviction = [r for r in results if r.get('final_signal') and
                        not r['final_signal'].startswith('SPEC_') and
                        r['final_signal'] not in ('DO_NOT_TRADE', 'NO_CLEAR_SIGNAL')]
     speculative = [r for r in results if r.get('final_signal', '').startswith('SPEC_')]
-    
+
     # ── HIGH CONVICTION ──────────────────────────────────────────────────
     if high_conviction:
         print(f"\n{'='*100}")
@@ -325,13 +393,13 @@ def print_summary(results: List[Dict]):
         print(f"{'='*100}")
         print(f"{'#':<4} {'Ticker':<8} {'Score':<7} {'Signal':<24} {'Edge%':<8} {'Pred':<5} {'Stab':<6} {'Qual':<6} {'Trend':<6}")
         print(f"{'-'*100}")
-        
+
         for i, s in enumerate(high_conviction[:30], 1):
             signal = s['final_signal'][:22] if s['final_signal'] else 'N/A'
             edge = f"{s.get('expected_edge_pct', 0):.1f}%" if s.get('expected_edge_pct') else 'N/A'
             stab = f"{s.get('regime_stability', 0)*100:.0f}%" if s.get('regime_stability') is not None else 'N/A'
             qual = f"{s.get('trade_quality', 0):.1f}" if s.get('trade_quality') is not None else 'N/A'
-            
+
             if 'BUY' in signal:
                 sig = f"\033[92m{signal:24s}\033[0m"
             elif 'SHORT' in signal:
@@ -340,12 +408,12 @@ def print_summary(results: List[Dict]):
                 sig = f"\033[93m{signal:24s}\033[0m"
             else:
                 sig = f"{signal:24s}"
-            
+
             print(f"{i:<4} {s['ticker']:<8} {s['score']:<7.1f} {sig} {edge:<8} "
                   f"{s['predictability_score']}/5   {stab:<6} {qual:<6} {s.get('trend_direction', 'N/A'):<6}")
     else:
         print(f"\n⚪ No high-conviction signals found.")
-    
+
     # ── SPECULATIVE ──────────────────────────────────────────────────────
     if speculative:
         print(f"\n{'='*100}")
@@ -353,20 +421,20 @@ def print_summary(results: List[Dict]):
         print(f"{'='*100}")
         print(f"{'#':<4} {'Ticker':<8} {'Score':<7} {'Signal':<24} {'Edge%':<8} {'Pred':<5} {'Stab':<6} {'Qual':<6} {'Trend':<6}")
         print(f"{'-'*100}")
-        
+
         for i, s in enumerate(speculative[:30], 1):
             signal = s['final_signal'][:22] if s['final_signal'] else 'N/A'
             edge = f"{s.get('expected_edge_pct', 0):.1f}%" if s.get('expected_edge_pct') else 'N/A'
             stab = f"{s.get('regime_stability', 0)*100:.0f}%" if s.get('regime_stability') is not None else 'N/A'
             qual = f"{s.get('trade_quality', 0):.1f}" if s.get('trade_quality') is not None else 'N/A'
-            
+
             sig = f"\033[93m{signal:24s}\033[0m"  # Orange/yellow
-            
+
             print(f"{i:<4} {s['ticker']:<8} {s['score']:<7.1f} {sig} {edge:<8} "
                   f"{s['predictability_score']}/5   {stab:<6} {qual:<6} {s.get('trend_direction', 'N/A'):<6}")
     else:
         print(f"\n⚪ No speculative signals found.")
-    
+
     # ── OVERALL STATS ────────────────────────────────────────────────────
     all_signals = [r.get('final_signal', '') for r in results]
     buy = sum(1 for s in all_signals if 'BUY' in s and not s.startswith('SPEC_'))
@@ -376,7 +444,7 @@ def print_summary(results: List[Dict]):
     spec_short = sum(1 for s in all_signals if s.startswith('SPEC_') and 'SHORT' in s)
     spec_wait = sum(1 for s in all_signals if s.startswith('SPEC_') and 'WAIT' in s)
     dnt = sum(1 for s in all_signals if s in ('DO_NOT_TRADE', 'NO_CLEAR_SIGNAL', ''))
-    
+
     print(f"\n{'='*60}")
     print(f"📈 Signal Distribution ({len(results)} analyzed)")
     print(f"{'='*60}")
@@ -394,27 +462,27 @@ def print_summary(results: List[Dict]):
 
 def main():
     print(f"\n{'='*100}")
-    print("STOCKAURA — TOP 800 MARKET CAP ANALYZER")
+    print("STOCKAURA — TOP MARKET CAP ANALYZER")
+    print(f"Scanning top {TOP_N_STOCKS} by market cap (filtering ETFs, OTC/ADR)")
     print(f"Hurst shuffles: {BATCH_SHUFFLES} (batch mode) | Min predictability: 2/5")
     print(f"{'='*100}\n")
-    
+
     print("📂 Loading tickers...")
     tickers = load_tickers(TICKERS_FILE, limit=TOP_N_STOCKS)
-    print(f"✅ Loaded {len(tickers)} stocks (top {TOP_N_STOCKS} by market cap)")
-    
+
     est_minutes = len(tickers) * 1.1 / 60
     input(f"\n⏸  Press ENTER to start analysis (~{est_minutes:.0f}-{est_minutes*1.5:.0f} minutes)...")
-    
+
     start = time.time()
     results = analyze_batch(tickers)
     elapsed = (time.time() - start) / 60
-    
+
     tradeable = [r for r in results if r.get('final_signal') not in ('DO_NOT_TRADE', 'NO_CLEAR_SIGNAL', None)]
-    
+
     print(f"\n⏱  Total time: {elapsed:.1f} minutes")
     print(f"📊 Analyzed: {len(tickers)} stocks")
     print(f"✅ Tradeable: {len(tradeable)} opportunities ({len([r for r in tradeable if not r['final_signal'].startswith('SPEC_')])} high conviction, {len([r for r in tradeable if r['final_signal'].startswith('SPEC_')])} speculative)")
-    
+
     save_results(results)
     print_summary(results)
 
