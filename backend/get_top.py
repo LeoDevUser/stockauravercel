@@ -354,7 +354,6 @@ def analyze_batch(tickers: List[Dict]) -> List[Dict]:
 
 def save_results(results: List[Dict], filename: str = "top_stocks.json"):
     """Save to JSON"""
-    # Save all tradeable results (not just top 50)
     tradeable = [r for r in results if r.get('final_signal') not in ('DO_NOT_TRADE', 'NO_CLEAR_SIGNAL', None)]
 
     output = {
@@ -367,13 +366,13 @@ def save_results(results: List[Dict], filename: str = "top_stocks.json"):
             'account_size': DEFAULT_ACCOUNT_SIZE,
             'risk_per_trade': DEFAULT_RISK_PER_TRADE,
         },
-        'stocks': results[:100]  # Top 100 for review
+        'stocks': results[:min(len(results),150)]  # Top 150 for review
     }
 
     with open(filename, 'w') as f:
         json.dump(output, f, indent=2)
 
-    print(f"\n✅ Saved top 100 to {filename}")
+    print(f"\n✅ Saved top 150 to {filename}")
     return filename
 
 
