@@ -18,37 +18,23 @@ def format_number(num):
         return f'{num}'
 
 
-def dfa_hurst(series, min_box=10, max_box=None, num_scales=20):
+def dfa_hurst(series, min_box=10, num_scales=20):
     """
     Detrended Fluctuation Analysis (DFA) to estimate Hurst exponent.
-    
-    More robust than R/S analysis:
-    - Less sensitive to short-term correlations and trends
-    - Better performance on finite-length series
-    - More stable across different parameter choices
-    
-    Returns: H, scales, fluctuations, poly
-    - H: Hurst exponent (slope of log-log plot)
-    - scales: box sizes used
-    - fluctuations: DFA fluctuation at each scale
-    - poly: polynomial fit coefficients
     """
     N = len(series)
-    if max_box is None:
-        max_box = N // 4  # Use at most 1/4 of series length
+    max_box = N // 4
     
     if max_box <= min_box or N < min_box * 4:
         return np.nan, None, None, None
     
-    # Step 1: Integrate the mean-centered series (cumulative sum of deviations)
+    #Integrate the mean-centered series (cumulative sum of deviations)
     y = np.cumsum(series - np.mean(series))
     
-    # Step 2: Generate logarithmically spaced box sizes
+    #Generate logarithmically spaced box sizes
     scales = np.unique(
         np.logspace(np.log10(min_box), np.log10(max_box), num=num_scales).astype(int)
     )
-    # Filter out scales that are too large
-    scales = scales[scales <= N // 2]
     
     if len(scales) < 4:
         return np.nan, None, None, None
@@ -78,7 +64,7 @@ def dfa_hurst(series, min_box=10, max_box=None, num_scales=20):
             rms = np.sqrt(np.mean((segment - trend) ** 2))
             rms_values.append(rms)
         
-        # Backward pass (use remaining data from the end)
+        # Backward pass (to avoid wasting data and have more values for the fluctuation est)
         for i in range(n_boxes):
             start = N - (i + 1) * box_size
             end = start + box_size
@@ -134,10 +120,6 @@ def hurst_with_baseline(series, n_shuffles=50, **kwargs):
     the detected regime (trending/mean-reverting) is likely noise.
     
     Returns: H, H_shuffled_mean, H_shuffled_std, is_significant, scales, fluctuations, poly
-    - H: real Hurst exponent
-    - H_shuffled_mean: mean Hurst from shuffled series (should be ~0.5)
-    - H_shuffled_std: std of shuffled Hurst values
-    - is_significant: True if |H - 0.5| is statistically distinguishable from random
     """
     # Real Hurst
     H, scales, fluctuations, poly = dfa_hurst(series, **kwargs)
@@ -147,7 +129,7 @@ def hurst_with_baseline(series, n_shuffles=50, **kwargs):
     
     # Shuffled baseline
     shuffled_hursts = []
-    rng = np.random.default_rng(42)  # Reproducible
+    rng = np.random.default_rng(42)
     
     for _ in range(n_shuffles):
         shuffled = rng.permutation(series)
@@ -163,28 +145,27 @@ def hurst_with_baseline(series, n_shuffles=50, **kwargs):
     H_shuf_std = np.std(shuffled_hursts)
     
     # Significant if real H is >1.5 standard deviations from shuffled mean
+    is_significant = False
     if H_shuf_std > 0:
         z_score = abs(H - H_shuf_mean) / H_shuf_std
         is_significant = z_score > 1.5
-    else:
-        is_significant = False
     
     return H, H_shuf_mean, H_shuf_std, is_significant, scales, fluctuations, poly
 
 
 def multi_day_momentum_corr(daily_returns, block_days=3):
     """
-    Calculate momentum correlation using NON-OVERLAPPING multi-day blocks.
+    Calculate momentum correlation using non-overlapping multi-day blocks.
     
     Measures: "Does the direction of this 3-day period predict the next 3-day period?"
     
-    Returns: (correlation, n_pairs) or (None, 0)
+    Returns: correlation or None
     """
     n = len(daily_returns)
     n_blocks = n // block_days
     
-    if n_blocks < 20:  # Need at least 10 pairs
-        return None, 0
+    if n_blocks < 20:
+        return None
     
     # Build non-overlapping block returns
     blocks = []
@@ -201,14 +182,14 @@ def multi_day_momentum_corr(daily_returns, block_days=3):
     y = blocks[1:]
     
     if np.std(x) == 0 or np.std(y) == 0:
-        return None, 0
+        return None
     
     corr = np.corrcoef(x, y)[0, 1]
     
     if np.isnan(corr):
-        return None, 0
+        return None
     
-    return float(corr), len(x)
+    return float(corr)
 
 
 def non_overlapping_mean_reversion(returns, window_days):
@@ -876,7 +857,7 @@ def analyze_stock(ticker, period="5y", window_days=5, account_size=10000, risk_p
 
     # MOMENTUM CORRELATION
     if len(returns_train) > 30:
-        m_corr, n_pairs = multi_day_momentum_corr(returns_train, block_days=3)
+        m_corr = multi_day_momentum_corr(returns_train, block_days=3)
         if m_corr is not None:
             res['momentum_corr'] = float(m_corr)
             if abs(m_corr) > 0.08:
@@ -892,7 +873,7 @@ def analyze_stock(ticker, period="5y", window_days=5, account_size=10000, risk_p
 
     # OUT-OF-SAMPLE TESTING
     if len(returns_test) > 30:
-        m_corr_oos, _ = multi_day_momentum_corr(returns_test, block_days=3)
+        m_corr_oos = multi_day_momentum_corr(returns_test, block_days=3)
         if m_corr_oos is not None:
             res['momentum_corr_oos'] = float(m_corr_oos)
 
@@ -1229,3 +1210,6 @@ def generate_trading_signal(res):
             signal = 'SPEC_' + signal
     
     return signal or 'DO_NOT_TRADE'
+
+if __name__ == "__main__":
+    print(analyze_stock('PLTR'))
