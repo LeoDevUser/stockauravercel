@@ -248,7 +248,7 @@ def non_overlapping_mean_reversion(returns, window_days):
 
 def volume_price_confirmation(df, lookback=60):
     """
-    Volume-Price Confirmation Test (5th predictability test)
+    Volume-Price Confirmation Test
     """
     try:
         recent = df.tail(lookback).copy()
@@ -316,7 +316,7 @@ def calculate_trade_quality(res):
     components = {}
     total = 0.0
     
-    # ── 1. MULTI-TIMEFRAME ALIGNMENT (0-2) ──────────────────────────────
+    #1. MULTI-TIMEFRAME TREND ALIGNMENT (0-2)
     returns = []
     for key in ['recent_return_1m', 'recent_return_3m', 'recent_return_6m', 'recent_return_1y']:
         val = res.get(key)
@@ -339,7 +339,7 @@ def calculate_trade_quality(res):
         else:
             components['trend_alignment'] = 0.3
     else:
-        components['trend_alignment'] = 0.5
+        components['trend_alignment'] = 0.0
     
     total += components['trend_alignment']
     
@@ -380,7 +380,7 @@ def calculate_trade_quality(res):
             else:
                 components['entry_timing'] = 0.3
     else:
-        components['entry_timing'] = 0.5
+        components['entry_timing'] = 0.0
     
     total += components['entry_timing']
     
@@ -401,7 +401,7 @@ def calculate_trade_quality(res):
         else:
             components['sharpe_quality'] = 0.0
     else:
-        components['sharpe_quality'] = 0.5
+        components['sharpe_quality'] = 0.0
     
     total += components['sharpe_quality']
     
@@ -418,7 +418,7 @@ def calculate_trade_quality(res):
         else:
             components['volatility_fit'] = 0.3
     else:
-        components['volatility_fit'] = 0.5
+        components['volatility_fit'] = 0.0
     
     total += components['volatility_fit']
     
@@ -447,12 +447,12 @@ def calculate_trade_quality(res):
         else:
             components['volume_confirmation'] = 0.2
     else:
-        components['volume_confirmation'] = 0.5
+        components['volume_confirmation'] = 0.0
     
     total += components['volume_confirmation']
     
     # ── FINAL SCORE ──────────────────────────────────────────────────────
-    total = round(min(10.0, total), 1)
+    total = round(total, 1)
     
     if total >= 8.0:
         label = 'Excellent'
@@ -685,7 +685,7 @@ def analyze_stock(ticker, period="5y", window_days=5, account_size=10000, risk_p
         else:
             res['trend_direction'] = 'NEUTRAL'
 
-    # Z-SCORE (Simple 20-day MA)
+    # Z-SCORE
     if len(df) >= 20:
         roll_m = df['Close'].rolling(window=20).mean()
         roll_s = df['Close'].rolling(window=20).std()
@@ -694,10 +694,10 @@ def analyze_stock(ticker, period="5y", window_days=5, account_size=10000, risk_p
             z = (df['Close'].iloc[-1] - roll_m.iloc[-1]) / curr_std
             res['zscore'] = float(z)
 
-    # Z-EMA (Exponential 20-day MA)
+    # Z-EMA
     if len(df) >= 20:
-        ema_m = df['Close'].ewm(span=20).mean()
-        ema_s = df['Close'].ewm(span=20).std()
+        ema_m = df['Close'].ewm(span=20, adjust=False, min_periods=20).mean()
+        ema_s = df['Close'].ewm(span=20, adjust=False, min_periods=20).std()
         ema_std = ema_s.iloc[-1]
         if ema_std > 0:
             z_ema = (df['Close'].iloc[-1] - ema_m.iloc[-1]) / ema_std
@@ -868,7 +868,7 @@ def analyze_stock(ticker, period="5y", window_days=5, account_size=10000, risk_p
         res['mean_rev_down'] = mean_rev_down
 
         if res['mean_rev_up'] is not None and res['mean_rev_down'] is not None:
-            if abs(res['mean_rev_up']) > 0.003 and abs(res['mean_rev_down']) > 0.003:
+            if abs(res['mean_rev_up']) > 0.01 and abs(res['mean_rev_down']) > 0.01:
                 res['predictability_score'] += 1
 
     # OUT-OF-SAMPLE TESTING
