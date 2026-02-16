@@ -53,7 +53,7 @@ export function TradingVerdict({ results, transactionCost, tradeSize, riskTolera
   // FRICTION & EDGE CALCULATIONS
   // ============================================================================
   
-  const dynamicSlippage = results.estimated_slippage_pct ? results.estimated_slippage_pct / 100 : 0.0005
+  const dynamicSlippage = 0.0005
   const totalFriction = (dynamicSlippage + transactionCost) * 2
   const totalFrictionPct = totalFriction * 100
 
@@ -521,18 +521,6 @@ export function TradingVerdict({ results, transactionCost, tradeSize, riskTolera
         )}
       </div>
 
-      {/* Liquidity warning (advisory) */}
-      {results.liquidity_warning && config.verdict !== 'DO NOT TRADE' && (
-        <div className="liquidity-failure-warning">
-          <h4 style={{ color: '#f59e0b', margin: '0 0 0.75em 0' }}>
-            ⚠ Liquidity Note
-          </h4>
-          <p style={{ color: '#d0d0d0', fontSize: '0.95em', lineHeight: '1.6', margin: '0' }}>
-            {results.liquidity_warning}
-          </p>
-        </div>
-      )}
-
       {/* Position Details - Only show if tradeable or wait */}
       {config.verdict !== 'DO NOT TRADE' && (
         <div className="position-details">
@@ -686,11 +674,6 @@ export function TradingVerdict({ results, transactionCost, tradeSize, riskTolera
           </div>
         </div>
         
-        {results.liquidity_warning && (
-          <div className="liquidity-warning">
-            ⚠ {results.liquidity_warning}
-          </div>
-        )}
       </div>
 
       {/* Disclaimer */}

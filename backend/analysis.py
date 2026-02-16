@@ -862,10 +862,6 @@ def analyze_stock(ticker, period="5y", window_days=5, account_size=10000, risk_p
         res['quality_components'] = quality['quality_components']
         res['quality_label'] = quality['quality_label']
     
-    # Zero out edge if pattern failed statistical validation
-    if res['final_signal'] in ['DO_NOT_TRADE', 'NO_CLEAR_SIGNAL']:
-        res['expected_edge_pct'] = 0.0
-        
     return res
 
 
@@ -882,7 +878,7 @@ def generate_trading_signal(res):
     - SPECULATIVE (predictability 2/5): Reduced position
     
     Hard rejections:
-    - Regime stability < 1 → DO_NOT_TRADE
+    - Regime stability < 0.5 → DO_NOT_TRADE
     - Edge < 3x friction → DO_NOT_TRADE
     - Predictability < 2 → DO_NOT_TRADE
     """
@@ -894,7 +890,7 @@ def generate_trading_signal(res):
     
     # HARD GATE: Regime Stability (no sign flips)
     #TODO this might be to strict, will test
-    if res.get('regime_stability',0.0) < 1.0:
+    if res.get('regime_stability',0.0) < 0.5:
         return 'DO_NOT_TRADE'
     
     # Directly check edge vs friction ratio
