@@ -37,7 +37,6 @@ export interface AnalysisResult {
   regime_stability: number | null
   data_points: number
   transaction_cost: number
-  slippage: number
   trend_direction: 'UP' | 'DOWN' | 'NEUTRAL' | null
   recent_return_1y: number | null
   recent_return_6m: number | null
@@ -52,17 +51,9 @@ export interface AnalysisResult {
   position_risk_amount: number | null
   position_size_note: string | null
   risk_per_trade: number
-  min_account_needed: number | null
   avg_daily_volume: number | null
-  amihud_illiquidity: number | null
-  liquidity_score: string | null
-  position_size_vs_volume: number | null
-  estimated_slippage_pct: number | null
   total_friction_pct: number | null
   expected_edge_pct: number | null
-  is_liquid_enough: boolean | null
-  liquidity_failed: boolean
-  liquidity_warning: string | null
   speculative_full_shares: number | null
   // Volume-Price Confirmation
   vp_ratio: number | null

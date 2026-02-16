@@ -7,7 +7,7 @@ export const tooltipContent = {
         <li><strong>Momentum Correlation:</strong> Measures if 3-day price blocks predict the next block (non-overlapping)</li>
         <li><strong>Hurst Exponent (DFA):</strong> Identifies trending vs mean-reverting behavior, validated against shuffled baseline</li>
         <li><strong>Mean Reversion:</strong> Tests if extreme moves tend to reverse</li>
-        <li><strong>Regime Stability OOS:</strong> Does the pattern hold on unseen data? (was a hard gate, now also scored)</li>
+        <li><strong>Regime Stability OOS:</strong> Does the pattern hold on unseen data?</li>
         <li><strong>Volume-Price Confirmation:</strong> Does volume increase on moves in the trend direction?</li>
       </ul>
       <p><strong>≥3/5 = High Conviction</strong> (full position). <strong>2/5 = Speculative</strong> (half position, extra warnings). <strong>&lt;2/5 = DO NOT TRADE.</strong></p>
@@ -168,19 +168,6 @@ export const tooltipContent = {
       <p>Average number of shares traded per day.</p>
       <p>Higher volume = more liquid (easier to buy/sell without moving price).</p>
       <p><strong>Compare to position size:</strong> Your position should be &lt;2% of daily volume to avoid excessive slippage.</p>
-    </>
-  ),
-
-  amihudIlliquidity: (
-    <>
-      <strong>Amihud Illiquidity Ratio</strong>
-      <p>Measures price impact per dollar of trading volume: |Return| / (Volume × Price)</p>
-      <ul>
-        <li><strong>&lt;0.001:</strong> Highly liquid (large-cap)</li>
-        <li><strong>0.001-0.01:</strong> Moderately liquid</li>
-        <li><strong>&gt;0.01:</strong> Illiquid (price moves easily)</li>
-      </ul>
-      <p>Lower is better for trading large positions.</p>
     </>
   ),
 
