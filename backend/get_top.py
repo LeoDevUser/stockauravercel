@@ -177,7 +177,6 @@ def analyze_stock_with_retry(ticker: str, title: str, retry_count: int = 0) -> D
             'trend_direction': data.get('trend_direction'),
             'sharpe': data.get('sharpe'),
             'volatility': data.get('volatility'),
-            'liquidity_failed': data.get('liquidity_failed', False),
             'suggested_shares': data.get('suggested_shares'),
             'z_ema': data.get('z_ema'),
             'hurst': data.get('hurst'),
@@ -246,10 +245,6 @@ def calculate_score(data: Dict) -> float:
         'NO_CLEAR_SIGNAL': 0, 'DO_NOT_TRADE': -50
     }
     score += signal_scores.get(data.get('final_signal', ''), 0)
-
-    # Liquidity bonus
-    if not data.get('liquidity_failed', False):
-        score += 10
 
     # Volatility penalty
     if data.get('volatility') and data.get('volatility') > 50:
