@@ -815,9 +815,7 @@ def analyze_stock(ticker, period="5y", window_days=5, account_size=10000, risk_p
     res['total_friction_pct'] = float(total_friction * 100)
 
     # Calculate Expected Edge
-    if res['momentum_corr'] is not None and res['volatility'] is not None:
-        expected_edge = abs(res['momentum_corr']) * res['volatility']
-        res['expected_edge_pct'] = float(expected_edge)
+    res['expected_edge_pct'] = res.get('Return',0.0)
     
     # GENERATE FINAL TRADING SIGNAL
     res['final_signal'] = generate_trading_signal(res)
