@@ -108,7 +108,7 @@ export default function TopStocksPage() {
         <h2>Error Loading Data</h2>
         <p>{error}</p>
         <p style={{ marginTop: '2em', fontSize: '0.9em', color: '#999' }}>
-          Make sure you've run the analyze_top_stocks.py script first to generate the data.
+			Top Stocks Not Generated, Contact Administrator
         </p>
         <button onClick={() => navigate('/')} style={{ marginTop: '2em' }}>
           Go to Home
