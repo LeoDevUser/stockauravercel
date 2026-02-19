@@ -40,6 +40,20 @@ interface TopStocksData {
   total_analyzed: number
   stocks: TopStock[]
 }
+const getSignalCategory = (signal: string): 'buy' | 'short' | 'wait' | 'none' => {
+	if (signal.includes('BUY')) return 'buy'
+	if (signal.includes('SHORT')) return 'short'
+	if (signal.includes('WAIT')) return 'wait'
+	return 'none'
+}
+
+const getSignalColor = (signal: string): string => {
+	const category = getSignalCategory(signal)
+	if (category === 'buy') return '#22c55e'
+	if (category === 'short') return '#ef4444'
+	if (category === 'wait') return '#f59e0b'
+	return '#888'
+}
 
 export default function TopStocksPage() {
   const [data, setData] = useState<TopStocksData | null>(null)
@@ -56,11 +70,11 @@ export default function TopStocksPage() {
         
         if (!response.ok) {
           throw new Error('Failed to load top stocks data')
-        }
-        
-        const jsonData: TopStocksData = await response.json()
-        // Filter out non-actionable signals — only show tradeable opportunities
-		setData({
+			}
+			
+			const jsonData: TopStocksData = await response.json()
+			// Filter out non-actionable signals — only show tradeable opportunities
+			setData({
 			...jsonData,
 			stocks: jsonData.stocks.filter(
 				s => s.final_signal !== 'NO_CLEAR_SIGNAL' && s.final_signal !== 'DO_NOT_TRADE'
@@ -76,20 +90,6 @@ export default function TopStocksPage() {
     loadTopStocks()
   }, [])
 
-  const getSignalCategory = (signal: string): 'buy' | 'short' | 'wait' | 'none' => {
-    if (signal.includes('BUY')) return 'buy'
-    if (signal.includes('SHORT')) return 'short'
-    if (signal.includes('WAIT')) return 'wait'
-    return 'none'
-  }
-
-  const getSignalColor = (signal: string): string => {
-    const category = getSignalCategory(signal)
-    if (category === 'buy') return '#22c55e'
-    if (category === 'short') return '#ef4444'
-    if (category === 'wait') return '#f59e0b'
-    return '#888'
-  }
 
   const filteredStocks = data?.stocks.filter(stock => {
     if (filter === 'all') return true
