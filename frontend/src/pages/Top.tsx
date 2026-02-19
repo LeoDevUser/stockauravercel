@@ -60,10 +60,12 @@ export default function TopStocksPage() {
         
         const jsonData: TopStocksData = await response.json()
         // Filter out non-actionable signals — only show tradeable opportunities
-        jsonData.stocks = jsonData.stocks.filter(
-          s => s.final_signal !== 'NO_CLEAR_SIGNAL' && s.final_signal !== 'DO_NOT_TRADE'
-        )
-        setData(jsonData)
+		setData({
+			...jsonData,
+			stocks: jsonData.stocks.filter(
+				s => s.final_signal !== 'NO_CLEAR_SIGNAL' && s.final_signal !== 'DO_NOT_TRADE'
+			)
+		})
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Unknown error')
       } finally {
