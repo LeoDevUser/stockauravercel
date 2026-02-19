@@ -34,10 +34,16 @@ export default function Tooltip({ content, position = 'top' }: TooltipProps) {
     <div className="tooltip-wrapper">
       <button
         className="tooltip-trigger"
-		onClick={() => {setIsVisible(!isVisible); setIsClicked(!isCliked)}}
-		onMouseOver={() => setIsVisible(true)}
-		onMouseOut={() => setIsVisible(false || isCliked)}
-		onBlur={() => {setIsVisible(false); setIsClicked(false)}}
+        onClick={() => {
+          setIsVisible(!isVisible)
+          setIsClicked(!isCliked)
+        }}
+        onMouseOver={() => setIsVisible(true)}
+        onMouseOut={() => setIsVisible(false || isCliked)}
+        onBlur={() => {
+          setIsVisible(false)
+          setIsClicked(false)
+        }}
         aria-label="More information"
         type="button"
       >

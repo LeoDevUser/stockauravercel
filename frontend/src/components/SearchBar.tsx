@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import '../styles/SearchBar.css'
-import { apiUrl } from '../utils/api';
+import { apiUrl } from '../utils/api'
 
 interface Suggestion {
   ticker: string
@@ -8,11 +8,14 @@ interface Suggestion {
 }
 
 interface SearchBarProps {
-  onSelect: (ticker: string) => void;
-  placeholder?: string;
+  onSelect: (ticker: string) => void
+  placeholder?: string
 }
 
-export default function SearchBar({ onSelect, placeholder = "Search..." }: SearchBarProps) {
+export default function SearchBar({
+  onSelect,
+  placeholder = 'Search...',
+}: SearchBarProps) {
   const [input, setInput] = useState<string>('')
   const [suggestions, setSuggestions] = useState<Suggestion[]>([])
   const [_, setLoading] = useState<boolean>(false)
@@ -23,17 +26,19 @@ export default function SearchBar({ onSelect, placeholder = "Search..." }: Searc
   useEffect(() => {
     if (!input.trim()) {
       setSuggestions([])
-	  setSelectedIndex(-1)
+      setSelectedIndex(-1)
       return
     }
 
     const debounce = setTimeout(async () => {
       setLoading(true)
       try {
-        const response = await fetch(apiUrl(`/search?q=${input.toUpperCase()}&limit=10`))
+        const response = await fetch(
+          apiUrl(`/search?q=${input.toUpperCase()}&limit=10`)
+        )
         const data: Suggestion[] = await response.json()
         setSuggestions(data)
-		setSelectedIndex(-1)
+        setSelectedIndex(-1)
       } catch (error) {
         console.error('Search failed:', error)
       } finally {
@@ -44,41 +49,41 @@ export default function SearchBar({ onSelect, placeholder = "Search..." }: Searc
     return () => clearTimeout(debounce)
   }, [input])
 
-	useEffect(() => {
-		if (selectedRef.current) {
-		  selectedRef.current.scrollIntoView({ block: 'nearest' })
-		}
-	}, [selectedIndex])
+  useEffect(() => {
+    if (selectedRef.current) {
+      selectedRef.current.scrollIntoView({ block: 'nearest' })
+    }
+  }, [selectedIndex])
 
-	const handleSelect = (ticker: string) => {
-		onSelect(ticker)
-		setSuggestions([])
-		setInput('')
-		setSelectedIndex(-1)
-		setFocus(false)
-	}
+  const handleSelect = (ticker: string) => {
+    onSelect(ticker)
+    setSuggestions([])
+    setInput('')
+    setSelectedIndex(-1)
+    setFocus(false)
+  }
 
-	const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-		if (e.key === 'ArrowDown') {
-		  e.preventDefault()
-		  setSelectedIndex(prev => 
-			prev < suggestions.length - 1 ? prev + 1 : prev
-		  )
-		} else if (e.key === 'ArrowUp') {
-		  e.preventDefault()
-		  setSelectedIndex(prev => prev > 0 ? prev - 1 : -1)
-		} else if (e.key === 'Enter') {
-		  if (selectedIndex >= 0) {
-			handleSelect(suggestions[selectedIndex].ticker)
-		  } else if (input.length > 0) {
-			handleSelect(input.toUpperCase())
-		  }
-		} else if (e.key === 'Escape') {
-		  setSuggestions([])
-		  setSelectedIndex(-1)
-		  setFocus(false)
-		}
-	}
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'ArrowDown') {
+      e.preventDefault()
+      setSelectedIndex((prev) =>
+        prev < suggestions.length - 1 ? prev + 1 : prev
+      )
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault()
+      setSelectedIndex((prev) => (prev > 0 ? prev - 1 : -1))
+    } else if (e.key === 'Enter') {
+      if (selectedIndex >= 0) {
+        handleSelect(suggestions[selectedIndex].ticker)
+      } else if (input.length > 0) {
+        handleSelect(input.toUpperCase())
+      }
+    } else if (e.key === 'Escape') {
+      setSuggestions([])
+      setSelectedIndex(-1)
+      setFocus(false)
+    }
+  }
 
   return (
     <div className="search-box-wrapper">
@@ -88,23 +93,23 @@ export default function SearchBar({ onSelect, placeholder = "Search..." }: Searc
         value={input}
         onChange={(e) => setInput(e.target.value)}
         onKeyDown={handleKeyDown}
-		onFocus={() => setFocus(true)}
-		onBlur={() => {
-			setTimeout(() => setFocus(false), 200)
-		}}
+        onFocus={() => setFocus(true)}
+        onBlur={() => {
+          setTimeout(() => setFocus(false), 200)
+        }}
         className="search-input"
         autoComplete="off"
       />
-      
+
       {suggestions.length > 0 && isFocus && (
         <div className="suggestions-dropdown">
-          {suggestions.map((item,index) => (
+          {suggestions.map((item, index) => (
             <div
               key={item.ticker}
-			  ref={index === selectedIndex ? selectedRef : null}
+              ref={index === selectedIndex ? selectedRef : null}
               className={`suggestion-item ${index === selectedIndex ? 'selected' : ''}`}
               onClick={() => handleSelect(item.ticker)}
-			  onMouseEnter={() => setSelectedIndex(index)}
+              onMouseEnter={() => setSelectedIndex(index)}
             >
               <div className="suggestion-ticker">{item.ticker}</div>
               <div className="suggestion-title">{item.title}</div>

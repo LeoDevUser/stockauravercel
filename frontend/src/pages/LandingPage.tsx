@@ -14,18 +14,18 @@ export default function LandingPage() {
     <div className="landing-container">
       <div className="landing-content">
         <div className="logo">
-          <img src={logo} alt="STOCKAURA LOGO"/>
+          <img src={logo} alt="STOCKAURA LOGO" />
         </div>
 
         <div className="search-section-landing">
-          <SearchBar 
-            onSelect={handleNavigate} 
-            placeholder="Enter a stock ticker to analyze it.." 
+          <SearchBar
+            onSelect={handleNavigate}
+            placeholder="Enter a stock ticker to analyze it.."
           />
         </div>
-		<div className='go-top' onClick={() => navigate('/top')}>
-	  <h1>Top Trading Opportunities</h1>
-		</div>
+        <div className="go-top" onClick={() => navigate('/top')}>
+          <h1>Top Trading Opportunities</h1>
+        </div>
       </div>
     </div>
   )

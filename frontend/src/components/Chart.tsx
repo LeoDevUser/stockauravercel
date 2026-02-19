@@ -1,5 +1,10 @@
 import { useEffect, useRef } from 'react'
-import { createChart, ColorType, CandlestickSeries, type Time } from 'lightweight-charts'
+import {
+  createChart,
+  ColorType,
+  CandlestickSeries,
+  type Time,
+} from 'lightweight-charts'
 import '../styles/Chart.css'
 
 interface OHLCData {
@@ -84,7 +89,7 @@ export default function Chart({ ohlcData, ticker }: CandlestickChartProps) {
     })
 
     // Create candlestick series
-    const candlestickSeries = chart.addSeries(CandlestickSeries,{
+    const candlestickSeries = chart.addSeries(CandlestickSeries, {
       upColor: '#1F5F7C', // Green for up
       downColor: '#F5722B', // Red for down
       borderUpColor: '#1F5F7C',
@@ -121,7 +126,8 @@ export default function Chart({ ohlcData, ticker }: CandlestickChartProps) {
 
     window.addEventListener('resize', handleResize)
 
-    return () => { //return the cleanup function
+    return () => {
+      //return the cleanup function
       window.removeEventListener('resize', handleResize)
       chart.remove()
       chartRef.current = null

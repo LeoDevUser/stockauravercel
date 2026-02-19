@@ -40,19 +40,21 @@ interface TopStocksData {
   total_analyzed: number
   stocks: TopStock[]
 }
-const getSignalCategory = (signal: string): 'buy' | 'short' | 'wait' | 'none' => {
-	if (signal.includes('BUY')) return 'buy'
-	if (signal.includes('SHORT')) return 'short'
-	if (signal.includes('WAIT')) return 'wait'
-	return 'none'
+const getSignalCategory = (
+  signal: string
+): 'buy' | 'short' | 'wait' | 'none' => {
+  if (signal.includes('BUY')) return 'buy'
+  if (signal.includes('SHORT')) return 'short'
+  if (signal.includes('WAIT')) return 'wait'
+  return 'none'
 }
 
 const getSignalColor = (signal: string): string => {
-	const category = getSignalCategory(signal)
-	if (category === 'buy') return '#22c55e'
-	if (category === 'short') return '#ef4444'
-	if (category === 'wait') return '#f59e0b'
-	return '#888'
+  const category = getSignalCategory(signal)
+  if (category === 'buy') return '#22c55e'
+  if (category === 'short') return '#ef4444'
+  if (category === 'wait') return '#f59e0b'
+  return '#888'
 }
 
 export default function TopStocksPage() {
@@ -67,19 +69,21 @@ export default function TopStocksPage() {
       try {
         setLoading(true)
         const response = await fetch(apiUrl('/top'))
-        
+
         if (!response.ok) {
           throw new Error('Failed to load top stocks data')
-			}
-			
-			const jsonData: TopStocksData = await response.json()
-			// Filter out non-actionable signals — only show tradeable opportunities
-			setData({
-			...jsonData,
-			stocks: jsonData.stocks.filter(
-				s => s.final_signal !== 'NO_CLEAR_SIGNAL' && s.final_signal !== 'DO_NOT_TRADE'
-			)
-		})
+        }
+
+        const jsonData: TopStocksData = await response.json()
+        // Filter out non-actionable signals — only show tradeable opportunities
+        setData({
+          ...jsonData,
+          stocks: jsonData.stocks.filter(
+            (s) =>
+              s.final_signal !== 'NO_CLEAR_SIGNAL' &&
+              s.final_signal !== 'DO_NOT_TRADE'
+          ),
+        })
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Unknown error')
       } finally {
@@ -90,11 +94,11 @@ export default function TopStocksPage() {
     loadTopStocks()
   }, [])
 
-
-  const filteredStocks = data?.stocks.filter(stock => {
-    if (filter === 'all') return true
-    return getSignalCategory(stock.final_signal) === filter
-  }) || []
+  const filteredStocks =
+    data?.stocks.filter((stock) => {
+      if (filter === 'all') return true
+      return getSignalCategory(stock.final_signal) === filter
+    }) || []
 
   if (loading) {
     return (
@@ -110,7 +114,7 @@ export default function TopStocksPage() {
         <h2>Error Loading Data</h2>
         <p>{error}</p>
         <p style={{ marginTop: '2em', fontSize: '0.9em', color: '#999' }}>
-			Top Stocks Not Generated, Contact Administrator
+          Top Stocks Not Generated, Contact Administrator
         </p>
         <button onClick={() => navigate('/')} style={{ marginTop: '2em' }}>
           Go to Home
@@ -130,7 +134,9 @@ export default function TopStocksPage() {
         </div>
         <div className="page-title">
           <h1>Top Trading Opportunities</h1>
-          <p className="timestamp">Updated: {new Date(data.timestamp).toLocaleString()}</p>
+          <p className="timestamp">
+            Updated: {new Date(data.timestamp).toLocaleString()}
+          </p>
         </div>
         <div className="home-top">
           <img src={home} alt="Landing" onClick={() => navigate('/')} />
@@ -150,19 +156,37 @@ export default function TopStocksPage() {
             className={filter === 'buy' ? 'active buy' : 'buy'}
             onClick={() => setFilter('buy')}
           >
-            Buy Signals ({data.stocks.filter(s => getSignalCategory(s.final_signal) === 'buy').length})
+            Buy Signals (
+            {
+              data.stocks.filter(
+                (s) => getSignalCategory(s.final_signal) === 'buy'
+              ).length
+            }
+            )
           </button>
           <button
             className={filter === 'short' ? 'active short' : 'short'}
             onClick={() => setFilter('short')}
           >
-            Short Signals ({data.stocks.filter(s => getSignalCategory(s.final_signal) === 'short').length})
+            Short Signals (
+            {
+              data.stocks.filter(
+                (s) => getSignalCategory(s.final_signal) === 'short'
+              ).length
+            }
+            )
           </button>
           <button
             className={filter === 'wait' ? 'active wait' : 'wait'}
             onClick={() => setFilter('wait')}
           >
-            Wait Signals ({data.stocks.filter(s => getSignalCategory(s.final_signal) === 'wait').length})
+            Wait Signals (
+            {
+              data.stocks.filter(
+                (s) => getSignalCategory(s.final_signal) === 'wait'
+              ).length
+            }
+            )
           </button>
         </div>
       </div>
@@ -206,7 +230,9 @@ export default function TopStocksPage() {
                 </div>
                 <div className="metric">
                   <span className="metric-label">Trend</span>
-                  <span className={`metric-value trend-${stock.trend_direction?.toLowerCase()}`}>
+                  <span
+                    className={`metric-value trend-${stock.trend_direction?.toLowerCase()}`}
+                  >
                     {stock.trend_direction === 'UP' && '📈 UP'}
                     {stock.trend_direction === 'DOWN' && '📉 DOWN'}
                     {stock.trend_direction === 'NEUTRAL' && '➡️ NEUTRAL'}
@@ -217,7 +243,9 @@ export default function TopStocksPage() {
               <div className="metrics-row">
                 <div className="metric">
                   <span className="metric-label">Predictability</span>
-                  <span className="metric-value">{stock.predictability_score}/5</span>
+                  <span className="metric-value">
+                    {stock.predictability_score}/5
+                  </span>
                 </div>
                 {stock.expected_edge_pct !== null && (
                   <div className="metric">
@@ -233,21 +261,34 @@ export default function TopStocksPage() {
                 <div className="metrics-row">
                   <div className="metric">
                     <span className="metric-label">Setup Quality</span>
-                    <span className="metric-value" style={{
-                      color: stock.trade_quality >= 7 ? '#22c55e' :
-                             stock.trade_quality >= 5 ? '#f59e0b' :
-                             stock.trade_quality >= 3 ? '#f97316' : '#ef4444'
-                    }}>
-                      {stock.trade_quality.toFixed(1)}/10 {stock.quality_label && `(${stock.quality_label})`}
+                    <span
+                      className="metric-value"
+                      style={{
+                        color:
+                          stock.trade_quality >= 7
+                            ? '#22c55e'
+                            : stock.trade_quality >= 5
+                              ? '#f59e0b'
+                              : stock.trade_quality >= 3
+                                ? '#f97316'
+                                : '#ef4444',
+                      }}
+                    >
+                      {stock.trade_quality.toFixed(1)}/10{' '}
+                      {stock.quality_label && `(${stock.quality_label})`}
                     </span>
                   </div>
                   {stock.vp_confirming !== null && (
                     <div className="metric">
                       <span className="metric-label">Vol-Price</span>
-                      <span className="metric-value" style={{
-                        color: stock.vp_confirming ? '#22c55e' : '#ef4444'
-                      }}>
-                        {stock.vp_confirming ? '✓' : '✗'} {stock.vp_ratio?.toFixed(2)}
+                      <span
+                        className="metric-value"
+                        style={{
+                          color: stock.vp_confirming ? '#22c55e' : '#ef4444',
+                        }}
+                      >
+                        {stock.vp_confirming ? '✓' : '✗'}{' '}
+                        {stock.vp_ratio?.toFixed(2)}
                       </span>
                     </div>
                   )}
@@ -256,13 +297,20 @@ export default function TopStocksPage() {
 
               {stock.regime_stability !== null && (
                 <div className="stability-bar">
-                  <span className="stability-label">Stability: {(stock.regime_stability * 100).toFixed(0)}%</span>
+                  <span className="stability-label">
+                    Stability: {(stock.regime_stability * 100).toFixed(0)}%
+                  </span>
                   <div className="progress-bar">
                     <div
                       className="progress-fill"
                       style={{
                         width: `${stock.regime_stability * 100}%`,
-                        backgroundColor: stock.regime_stability > 0.7 ? '#22c55e' : stock.regime_stability > 0.6 ? '#f59e0b' : '#ef4444'
+                        backgroundColor:
+                          stock.regime_stability > 0.7
+                            ? '#22c55e'
+                            : stock.regime_stability > 0.6
+                              ? '#f59e0b'
+                              : '#ef4444',
                       }}
                     />
                   </div>
